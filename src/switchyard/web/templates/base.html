@@ -1,0 +1,76 @@
+{% from "macros.html" import icon, avatar, pill %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{% if csrf %}<meta name="csrf-token" content="{{ csrf }}">{% endif %}
+<title>{% block title %}Overview{% endblock %} · Switchyard</title>
+<link rel="icon" href="/static/mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/app.css?v=3">
+<script>try{var t=localStorage.getItem("sy-theme");if(t&&t!=="system")document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body {% block live %}{% endblock %}>
+<div class="app">
+  <aside class="sidebar">
+    <a class="brand" href="/">
+      <span class="brand-mark"><img src="/static/mark.svg" alt="" width="18" height="18"></span>
+      <span class="brand-text"><span class="brand-name">Switchyard</span><span class="brand-org">{{ env.company }}</span></span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="/" data-short="Overview" {% if active == "overview" %}aria-current="page"{% endif %}>{{ icon("overview") }}<span>Overview</span></a>
+      <a href="/approvals" data-short="Approvals" {% if active == "approvals" %}aria-current="page"{% endif %}>{{ icon("approvals") }}<span>Approvals</span>{% if counts.attention %}<span class="count tone-warn">{{ counts.attention }}</span>{% endif %}</a>
+      <a href="/runs" data-short="Runs" {% if active == "runs" %}aria-current="page"{% endif %}>{{ icon("runs") }}<span>Runs</span>{% if counts.waiting %}<span class="count">{{ counts.waiting }}</span>{% endif %}</a>
+      <a href="/exceptions" data-short="Exceptions" {% if active == "exceptions" %}aria-current="page"{% endif %}>{{ icon("exceptions") }}<span>Exceptions</span>{% if counts.exceptions %}<span class="count tone-bad">{{ counts.exceptions }}</span>{% endif %}</a>
+      <p class="nav-label">Governance</p>
+      <a href="/audit" data-short="Audit" {% if active == "audit" %}aria-current="page"{% endif %}>{{ icon("audit") }}<span>Audit log</span></a>
+      <a href="/costs" data-short="Costs" {% if active == "costs" %}aria-current="page"{% endif %}>{{ icon("costs") }}<span>Model costs</span></a>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="env">
+        {% if env.mode == "live" %}
+        <span class="env-dot live"></span><span><strong>Live models</strong><br><span class="muted">{{ env.routing.default }} · {{ env.routing.reviewer }}</span></span>
+        {% else %}
+        <span class="env-dot"></span><span><strong>Offline demo</strong><br><span class="muted">Deterministic playbook models</span></span>
+        {% endif %}
+      </div>
+      {% if user %}
+      <div class="me">
+        {{ avatar(user.name) }}
+        <span class="me-text"><span class="me-name">{{ user.name }}</span><span class="me-role">{{ user.title }}</span></span>
+        <form method="post" action="/logout"><button class="icon-btn" type="submit" title="Sign out" aria-label="Sign out">{{ icon("logout") }}</button></form>
+      </div>
+      {% else %}
+      <a class="btn btn-block" href="/login?next={{ path|urlencode }}">{{ icon("lock", 14) }} Sign in to decide</a>
+      {% endif %}
+      <div class="theme" role="group" aria-label="Theme">
+        <button type="button" data-theme-set="system" title="System theme" aria-label="System theme">{{ icon("monitor", 14) }}</button>
+        <button type="button" data-theme-set="light" title="Light theme" aria-label="Light theme">{{ icon("sun", 14) }}</button>
+        <button type="button" data-theme-set="dark" title="Dark theme" aria-label="Dark theme">{{ icon("moon", 14) }}</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <nav class="crumbs" aria-label="Breadcrumb">{% block crumbs %}<span>Overview</span>{% endblock %}</nav>
+      <div class="topbar-end">
+        <span class="live-chip" id="live-chip" hidden><span class="live-dot"></span><span id="live-text">Live</span></span>
+      </div>
+    </header>
+    <div class="page" id="page">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+</div>
+{% if flash %}
+<div class="toast tone-{{ flash.kind }}" role="status" id="toast">
+  {{ icon("check" if flash.kind == "ok" else "x" if flash.kind == "bad" else "clock", 16) }}<span>{{ flash.text }}</span>
+  <button type="button" class="icon-btn" aria-label="Dismiss" onclick="this.parentElement.remove()">{{ icon("x", 14) }}</button>
+</div>
+{% endif %}
+<script src="/static/app.js?v=3" defer></script>
+</body>
+</html>

@@ -17,14 +17,27 @@ actions that need a person **in code, not in a prompt**.
 ```bash
 uv venv && uv pip install -e ".[dev]"     # or: python -m venv .venv && pip install -e ".[dev]"
 switchyard demo all                       # 13 failure-mode scenarios, 78 checks, ~30 s
-pytest                                    # 85 tests, scenarios included
-switchyard serve                          # API + worker + console on http://127.0.0.1:8000
+pytest                                    # 95 tests, scenarios included
+switchyard serve                          # console + API + worker on http://127.0.0.1:8000
 ```
 
 With `OPENAI_API_KEY` set and `SWITCHYARD_MODE=live`, the same agents run on OpenAI models. Model routing
-and prices are set in [`pricing.toml`](src/switchyard/defaults/pricing.toml).
+and prices are set in [`pricing.toml`](src/switchyard/defaults/pricing.toml). It has been run that way:
+three enquiries in 41 seconds for $0.05 in total, including a real review rejection and a real model
+ignoring a prompt injection. See [docs/LIVE-RUN.md](docs/LIVE-RUN.md).
 
-![Operations console: three actions waiting for a person (a binding quote, a held leak from a prompt-injected email, a service reply), two open exceptions, and runs with per-step status and model cost](docs/console.png)
+![Switchyard overview: what is waiting for a person, key figures, recent runs and the activity feed](docs/screens/overview.png)
+
+<table>
+<tr>
+<td width="62%"><img src="docs/screens/approval.png" alt="Approval review: the exact email that will be sent, why a person decides, who can approve, and one-click approve or reject"></td>
+<td width="38%"><img src="docs/screens/mobile.png" alt="The approvals inbox on a phone, with a bottom tab bar"></td>
+</tr>
+<tr>
+<td><img src="docs/screens/run.png" alt="Run detail: steps with the agent and model that ran each one, side effects verified at their destination, lead and estimate"></td>
+<td><img src="docs/screens/dark.png" alt="The overview in dark mode"></td>
+</tr>
+</table>
 
 ---
 
@@ -40,7 +53,7 @@ and prices are set in [`pricing.toml`](src/switchyard/defaults/pricing.toml).
 | People involved only for external communications, binding commitments, sensitive disclosures and material decisions | Four policy classes in [`policy.toml`](src/switchyard/defaults/policy.toml): internal routine (runs on its own), external communication, binding commitment, sensitive disclosure. Plus named *decisions* for choices with consequences. | *pilot*, *decision*, *project_ops* |
 | Approvals enforced outside of prompts | The executor re-classifies each action from its stored payload at execution time. Approvals are HMAC-signed and bound to the payload hash. Agents can only *propose* actions from a per-agent allowlist. A deterministic leak scan checks anything that leaves the company. | *injection*, *approval_integrity* |
 | A complete pilot, then a phased rollout | Pilot: `lead_to_proposal`. Two more workflows on the same engine show the next phases: `service_request` (service desk) and `survey_to_install` (project operations, no LLM). | [`workflows/`](src/switchyard/workflows) |
-| Company-owned code, configuration, tests, documentation, handover | MIT-licensed, configuration in TOML, 85 tests, CI, a runbook and a handover checklist. | [`docs/`](docs) |
+| Company-owned code, configuration, tests, documentation, handover | MIT-licensed, configuration in TOML, 95 tests, CI, a runbook and a handover checklist. | [`docs/`](docs) |
 
 ---
 
@@ -51,7 +64,7 @@ flowchart LR
   WH["Signed webhooks<br/>web form · email · field app"] --> API
 
   subgraph Backend["Switchyard backend — one process, SQLite (Postgres-ready)"]
-    API["FastAPI<br/>webhooks · approvals · console"] --> ENG["Durable engine<br/>DAG steps · leases · retries"]
+    API["FastAPI<br/>webhooks · console · /api"] --> ENG["Durable engine<br/>DAG steps · leases · retries"]
     ENG -->|"ctx.act()"| OUT["Outbox<br/>policy → approval → execute → verify"]
     POL[("policy.toml")] -.-> OUT
     ENG --- LOG[("audit chain · costs · exceptions")]
@@ -160,12 +173,36 @@ src/switchyard/
   adapters/            adapter contract, simulated-app adapters, HubSpot, Slack
   mcp_server.py        read-only MCP server (stdio or streamable HTTP)
   sandbox.py           simulated business apps with fault injection
-  api.py, console.py   webhooks, approvals, decisions, ops console
+  api.py               signed webhooks + JSON API under /api
+  web/                 operations console: views, sessions, Jinja2 templates, CSS
   cli.py               worker, serve, submit, approve, retry, inspect, fault, demo
   defaults/            policy.toml, pricing.toml, estimator.toml
 docs/                  architecture, reliability, approvals, integrations, operations, rollout, handover
 tests/                 unit, contract and scenario tests
 ```
+
+## The operations console
+
+`switchyard serve` starts the console, the JSON API and the worker in one process.
+
+- **Overview**: what is waiting for a person, key figures, recent runs and a plain-language activity feed.
+  It refreshes itself while open.
+- **Approvals**: an inbox of everything policy reserves for people. Each review page shows the exact content
+  that will be sent, rendered like the email, chat post or invoice it is. Beside it: why a person decides,
+  who holds the role, and approve or reject with an optional note.
+- **Runs**: every step with its status, attempts, duration, and the agent and model that ran it, with its
+  cost. Next to that: the side effects with their destination ids and verification, the lead, the estimate
+  and the reviewed draft. Failed steps can be retried from the page.
+- **Exceptions**: one queue. Each entry has a next step, and where it makes sense, decision buttons or a
+  retry button.
+- **Audit log and model costs**: chain status, readable events with raw data on demand, spend against the caps
+  per agent and model, and the price table.
+
+People sign in to act. Viewing needs no sign-in. Sessions are signed cookies (`HttpOnly`, `SameSite=Strict`,
+`Secure` over HTTPS), and every action is a POST with a CSRF token. Roles are checked by the same approval
+service the API uses. In offline demo mode, the sign-in page offers the three demo accounts. Production
+replaces sign-in with the company's SSO. The JSON API lives under `/api/`. Light and dark themes are
+included, and the layout works on a phone.
 
 ## Operating it
 
@@ -204,8 +241,9 @@ So that nothing here is overstated:
   tested against mocked HTTP only; they have not run against live accounts.
 - **Offline models.** CI and the demos use deterministic *playbook* models behind the SDK's `Model`
   interface. The SDK runner, handoffs, MCP calls, tools, structured outputs and usage accounting are
-  real; the reasoning is rules. Live mode uses the same code path but has not been run in CI. Prompts
-  would be tuned against the client's real messages during the pilot.
+  real; the reasoning is rules. Live mode uses the same code path. It was run against OpenAI on
+  1 November 2026 ([docs/LIVE-RUN.md](docs/LIVE-RUN.md)), but CI does not call paid models. Prompts would be
+  tuned against the client's real messages during the pilot.
 - **Estimator.** Its tariffs, yields and costs are illustrative defaults. They are not a pricing book.
 - **Scale.** This is a single-node SQLite deployment, which is the right size for a pilot.
 

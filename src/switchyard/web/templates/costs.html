@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% from "macros.html" import icon, pill, status, empty %}
+{% block title %}Model costs{% endblock %}
+{% block crumbs %}<span>Governance</span><span class="sep">/</span><span>Model costs</span>{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <h1>Model costs</h1>
+    <p class="lede">Token usage priced per model, with caps checked before every model call. A run or a day that reaches its cap stops and raises an exception rather than spending more.</p>
+  </div>
+</section>
+
+{% set pct = (today / cap_day * 100) if cap_day else 0 %}
+<section class="metrics metrics-3">
+  <div class="metric"><span class="metric-label">Spend today</span><span class="metric-value">{{ today|usd }}</span>
+    <span class="meter"><span style="width: {{ [pct, 100]|min }}%"></span></span><span class="metric-foot">{{ "%.1f"|format(pct) }}% of the {{ cap_day|usd }} daily cap</span></div>
+  <div class="metric"><span class="metric-label">Per-run cap</span><span class="metric-value">{{ cap_run|usd }}</span><span class="metric-foot">checked before each model call</span></div>
+  <div class="metric"><span class="metric-label">All time</span><span class="metric-value">{{ totals.cost|usd }}</span><span class="metric-foot">{{ "{:,}".format(totals.requests) }} requests · {{ "{:,}".format(totals.input + totals.output) }} tokens{% if totals.estimated %} · includes offline estimates{% endif %}</span></div>
+</section>
+
+<div class="grid-2">
+  <section class="card">
+    <header class="card-head"><div><h2>By agent and model</h2><p class="card-sub">Small models for routine work; a larger one for the independent reviewer.</p></div></header>
+    {% if breakdown %}
+    <div class="table-wrap"><table class="data">
+      <thead><tr><th>Agent</th><th class="num">Requests</th><th class="num">Tokens in / out</th><th class="num">Cost</th></tr></thead>
+      <tbody>{% for r in breakdown %}<tr><td>{{ r.agent }}<span class="cell-sub mono">{{ r.model }} · {{ "offline estimate" if r.estimated else "live" }}</span></td><td class="num">{{ r.requests }}</td><td class="num mono">{{ "{:,}".format(r.input_tokens) }} / {{ "{:,}".format(r.output_tokens) }}</td><td class="num mono">{{ r.cost_usd|usd }}</td></tr>{% endfor %}</tbody>
+    </table></div>
+    {% else %}{{ empty("costs", "No model calls yet", "Costs appear after the first agent runs.") }}{% endif %}
+  </section>
+
+  <section class="card">
+    <header class="card-head"><div><h2>Most expensive runs</h2><p class="card-sub">Useful for spotting loops or unusually long inputs.</p></div></header>
+    {% if top %}
+    <ul class="rows">{% for t in top %}
+      <li class="row"><a class="row-link" href="/runs/{{ t.run.id }}"><span class="row-main"><span class="row-kicker">{{ t.run.workflow|workflow }}</span><span class="row-title">{{ t.run.subject }}</span></span><span class="row-end"><span class="mono">{{ t.cost|usd }}</span><span class="muted small">{{ t.requests }} req</span></span></a></li>
+    {% endfor %}</ul>
+    {% else %}{{ empty("runs", "No runs with model usage", "Runs that call models are listed here.") }}{% endif %}
+  </section>
+</div>
+
+<section class="card pad">
+  <h2>Price table</h2>
+  <p class="muted">USD per million tokens, from <span class="mono">pricing.toml</span>. Check against OpenAI's pricing page before go-live; a change applies to the next call.</p>
+  <div class="table-wrap"><table class="data compact">
+    <thead><tr><th>Model</th><th class="num">Input</th><th class="num">Cached input</th><th class="num">Output</th></tr></thead>
+    <tbody>{% for name, p in prices.items() %}<tr><td class="mono">{{ name }}</td><td class="num mono">${{ "%.3f"|format(p.input) }}</td><td class="num mono">${{ "%.3f"|format(p.get("cached_input", p.input)) }}</td><td class="num mono">${{ "%.2f"|format(p.output) }}</td></tr>{% endfor %}</tbody>
+  </table></div>
+</section>
+{% endblock %}

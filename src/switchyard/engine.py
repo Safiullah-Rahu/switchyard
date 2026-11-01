@@ -19,6 +19,7 @@ goes through the outbox (policy → approval → execute → verify).
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import os
 import socket
 import sqlite3
@@ -487,6 +488,26 @@ class Engine:
         return None
 
     async def _run_step(self, run: dict[str, Any], step: dict[str, Any], fence: Fence) -> None:
+        keeper = asyncio.create_task(self._keep_lease(fence))
+        try:
+            await self._run_step_body(run, step, fence)
+        finally:
+            keeper.cancel()
+            with contextlib.suppress(asyncio.CancelledError):
+                await keeper
+
+    async def _keep_lease(self, fence: Fence) -> None:
+        """Heartbeat: a long model call must not look like a dead worker to the others."""
+        interval = max(0.2, self.settings.lease_seconds / 3)
+        while True:
+            await asyncio.sleep(interval)
+            with tx(self.conn):
+                self.conn.execute(
+                    "UPDATE steps SET lease_expires_at = ? WHERE run_id = ? AND name = ? AND lease_token = ? AND status = 'running'",
+                    (self.clock() + self.settings.lease_seconds, fence.run_id, fence.step, fence.token),
+                )
+
+    async def _run_step_body(self, run: dict[str, Any], step: dict[str, Any], fence: Fence) -> None:
         wf = self.workflows[run["workflow"]]
         definition = wf.step(step["name"])
         ctx = StepContext(self, run, step, fence)

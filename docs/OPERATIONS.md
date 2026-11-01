@@ -5,8 +5,8 @@
 | When | What | Command |
 |---|---|---|
 | Morning | Read the digest: runs, approvals waiting, spend, open exceptions | `switchyard digest` (cron: `switchyard digest --post "#ops-exceptions"` at 08:00) |
-| Through the day | Approve or reject what is waiting | console → *Waiting for a person*, or `switchyard approvals` |
-| Through the day | Clear exceptions | console → *Open exceptions*, or `switchyard exceptions` |
+| Through the day | Approve or reject what is waiting | console → *Approvals*, or `switchyard approvals` |
+| Through the day | Clear exceptions (decide, retry or resolve) | console → *Exceptions*, or `switchyard exceptions` |
 | Weekly | Verify the audit chain; review spend by agent | `switchyard audit-verify`, `switchyard costs` |
 
 ## Exception kinds and what to do

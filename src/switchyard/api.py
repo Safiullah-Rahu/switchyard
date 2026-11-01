@@ -14,18 +14,19 @@ import hmac
 import json
 import threading
 from collections.abc import AsyncIterator
+from pathlib import Path
 from typing import Any
 
 from fastapi import Body, FastAPI, Header, HTTPException, Request
-from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 
 from . import __version__
 from .approvals import ApprovalError
 from .canonical import payload_hash
 from .config import Settings, load_settings
-from .console import render_approval, render_console
 from .db import tx
 from .engine import Engine
+from .web.views import build_router
 
 REQUIRED_MESSAGE_FIELDS = ("from_name", "from_email", "subject", "body")
 
@@ -153,12 +154,12 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = False, 
         return {"duplicate": not created, "run_id": run_id}
 
     # ---- people ------------------------------------------------------------------------
-    @app.get("/approvals")
+    @app.get("/api/approvals")
     def approvals(status: str | None = "pending") -> list[dict[str, Any]]:
         with lock:
             return engine.approvals.list(status=status or None)
 
-    @app.post("/approvals/{approval_id}/decision")
+    @app.post("/api/approvals/{approval_id}/decision")
     def decide(
         approval_id: str, payload: dict[str, Any] = Body(...), authorization: str | None = Header(None)
     ) -> dict[str, Any]:
@@ -169,7 +170,7 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = False, 
             except ApprovalError as exc:
                 raise HTTPException(403, str(exc)) from None
 
-    @app.post("/decisions/{decision_id}")
+    @app.post("/api/decisions/{decision_id}")
     def answer(
         decision_id: str, payload: dict[str, Any] = Body(...), authorization: str | None = Header(None)
     ) -> dict[str, str]:
@@ -181,7 +182,7 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = False, 
                 raise HTTPException(400, str(exc)) from None
         return {"status": "decided", "by": who}
 
-    @app.post("/runs/{run_id}/steps/{step}/retry")
+    @app.post("/api/runs/{run_id}/steps/{step}/retry")
     def retry(run_id: str, step: str, authorization: str | None = Header(None)) -> dict[str, str]:
         who = principal(authorization)
         with lock:
@@ -189,24 +190,24 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = False, 
         return {"status": "retry scheduled", "by": who}
 
     # ---- reading -----------------------------------------------------------------------
-    @app.get("/runs")
+    @app.get("/api/runs")
     def runs(limit: int = 50) -> list[dict[str, Any]]:
         with lock:
             return engine.list_runs(limit)
 
-    @app.get("/runs/{run_id}")
+    @app.get("/api/runs/{run_id}")
     def run(run_id: str) -> dict[str, Any]:
         with lock:
             if engine.get_run(run_id) is None:
                 raise HTTPException(404, "no such run")
             return engine.run_view(run_id)
 
-    @app.get("/exceptions")
+    @app.get("/api/exceptions")
     def exceptions(status: str | None = "open") -> list[dict[str, Any]]:
         with lock:
             return engine.reporter.list(status=status or None)
 
-    @app.get("/costs")
+    @app.get("/api/costs")
     def costs() -> dict[str, Any]:
         with lock:
             return {
@@ -215,7 +216,7 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = False, 
                 "budgets": settings.pricing.get("budgets", {}),
             }
 
-    @app.get("/audit/verify")
+    @app.get("/api/audit/verify")
     def audit_verify() -> dict[str, Any]:
         with lock:
             check = engine.audit.verify()
@@ -234,17 +235,7 @@ def create_app(settings: Settings | None = None, *, start_worker: bool = False, 
             "open_exceptions": open_exc,
         }
 
-    @app.get("/", response_class=HTMLResponse)
-    def console() -> str:
-        with lock:
-            return render_console(engine)
-
-    @app.get("/approvals/{approval_id}/review", response_class=HTMLResponse)
-    def review(approval_id: str) -> str:
-        with lock:
-            approval = engine.approvals.get(approval_id)
-            if approval is None:
-                raise HTTPException(404, "no such approval")
-            return render_approval(engine, approval)
+    app.mount("/static", StaticFiles(directory=str(Path(__file__).parent / "web" / "static")), name="static")
+    app.include_router(build_router(engine, settings, lock))
 
     return app

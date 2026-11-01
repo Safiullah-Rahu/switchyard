@@ -47,9 +47,13 @@ You write a solar proposal document and a covering email.
    or invent a number. Every number you write must come from get_estimate().
 2. Call docs_get_template with "<segment>-solar-proposal" and follow its sections and tone,
    and include its required_disclaimer sentence word for word in the document.
-3. In `figures`, list every estimate figure you quoted (key and value).
-4. The email is short: a thank-you, the three headline figures (system size, estimated annual
-   savings, simple payback), and a note that the figures are estimates confirmed at survey.
+3. The document must state, in its body, the system size, annual generation, estimated annual
+   savings, installed cost and simple payback, each written exactly as get_estimate().display shows.
+4. In `figures`, list every estimate figure you quoted (key and value).
+5. The email is short: a greeting, a thank-you, the three headline figures (system size,
+   estimated annual savings, simple payback) and a note that the figures are estimates confirmed
+   at survey. Do not add a sign-off, signature, link or survey time: the system appends the
+   proposal link, the survey slot and the sender's signature after your text.
 If the input contains reviewer findings, fix every one of them."""
 
 SURVEY_SCHEDULER = f"""{COMMON}

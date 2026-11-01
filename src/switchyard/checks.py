@@ -39,6 +39,13 @@ _UNITS = {
 }
 
 KEY_FIGURES = ("system_kwp", "annual_generation_kwh", "annual_savings", "capex", "payback_years")
+KEY_LABELS = {
+    "system_kwp": "system size",
+    "annual_generation_kwh": "annual generation",
+    "annual_savings": "annual savings",
+    "capex": "installed cost",
+    "payback_years": "payback",
+}
 
 
 @dataclass
@@ -101,11 +108,10 @@ def check_proposal(draft: dict[str, Any], est: Estimate, required_disclaimer: st
     for key in KEY_FIGURES:
         expected, unit = figures[key]
         if not any(_close(v, expected) and u == unit for v, u, _ in body_mentions):
+            shown = f"{est.symbol}{expected:,.0f}" if unit == "currency" else f"{expected:g} {unit}"
             findings.append(
                 Finding(
-                    "blocker",
-                    "key_figures_present",
-                    f"the proposal does not state {key.replace('_', ' ')} ({expected:g} {unit})",
+                    "blocker", "key_figures_present", f"the proposal does not state the {KEY_LABELS[key]} ({shown})"
                 )
             )
 

@@ -16,7 +16,8 @@
 
 | Component | File | Responsibility |
 |---|---|---|
-| API | `api.py` | Signed webhooks in; approvals, decisions and retries from people; JSON read endpoints; console |
+| API | `api.py` | Signed webhooks in; JSON API under `/api` for approvals, decisions, retries and reads |
+| Console | `web/` | Server-rendered operations console (Jinja2): sign-in, approvals, runs, exceptions, audit, costs |
 | Engine | `engine.py` | Runs, steps, the dependency graph, leases, fencing, retries, waits, rewinds, run status |
 | Outbox | `outbox.py` | Intent state machine; the only caller of adapters' write methods |
 | Policy | `policy.py` + `policy.toml` | Action registry, risk classes, dynamic rules, leak scan, agent allowlists, principals |
@@ -116,5 +117,6 @@ the integration, not a mock of it.
 - Live mode: Agents SDK traces are grouped by `group_id = run_id`, with `workflow_name =
   switchyard.<workflow>.<step>`, and `trace_include_sensitive_data=False`.
 - Each audit entry records actor, event, subject and data, and the chain can be verified (`switchyard audit-verify`).
-- The console shows runs, pending approvals, open exceptions, today's model spend and the latest audit events.
+- The console shows runs step by step (with the agent, model and cost of each), pending approvals, open
+  exceptions, spend against the caps, and the audit log in plain language.
 - `switchyard digest` gives a plain-text summary for a daily post.

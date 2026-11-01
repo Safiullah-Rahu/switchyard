@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% from "macros.html" import icon, pill, status, risk_pill, avatar %}
+{% block title %}{{ a.action_label }} · {{ a.subject }}{% endblock %}
+{% block live %}{% if a.status == "approved" and a.intent_status != "verified" %}data-live{% endif %}{% endblock %}
+{% block crumbs %}<a href="/approvals">Approvals</a><span class="sep">/</span><span class="mono">{{ a.id|short }}</span>{% endblock %}
+{% block content %}
+{% set can_decide = user and (user.roles|select("in", a.required_roles)|list) %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">{{ a.workflow|workflow }} · <a href="/runs/{{ a.run_id }}">{{ a.subject }}</a></p>
+    <h1>{{ a.action_label }}{% if a.recipients %} to {{ a.recipients[0] }}{% elif a.channel %} in {{ a.channel }}{% endif %}</h1>
+    <p class="head-meta">{{ risk_pill(a.risk_class) }}{% if a.status != "pending" %}{{ status(a.status) }}{% endif %}<span>Requested {{ a.requested_at|rel }}</span>{% if a.status == "pending" %}<span>·</span><span>Expires {{ a.expires_at|rel }}</span>{% endif %}{% if a.amount %}<span>·</span><span>Quote <strong>{{ a.amount }}</strong></span>{% endif %}</p>
+  </div>
+</section>
+
+<div class="split">
+  <div class="split-main">
+    {% if a.kind == "email" %}
+    <article class="mail" aria-label="Email preview">
+      <header class="mail-head">
+        {{ avatar(env.company) }}
+        <div class="mail-who">
+          <div><strong>{{ env.company }}</strong> <span class="muted">&lt;{{ a.payload.get("from", "proposals@demo-energy.test") }}&gt;</span></div>
+          <div class="muted">To {{ a.payload.to|join(", ") }}{% if a.payload.cc %} · Cc {{ a.payload.cc|join(", ") }}{% endif %}</div>
+        </div>
+        {% if a.intent_status == "verified" %}<span class="mail-tag tone-text-ok">{{ icon("check", 14) }} Sent and verified</span>
+        {% elif a.status == "rejected" %}<span class="mail-tag">{{ icon("x", 14) }} Not sent</span>
+        {% else %}<span class="mail-tag">{{ icon("mail", 14) }} Will be sent</span>{% endif %}
+      </header>
+      <h2 class="mail-subject">{{ a.payload.subject }}</h2>
+      <div class="mail-body">{{ a.payload.body|linkify }}</div>
+    </article>
+    {% elif a.kind == "chat" %}
+    <article class="chatpost">
+      <header class="mail-head"><span class="row-icon tone-info">{{ icon("chat", 16) }}</span><div class="mail-who"><strong>{{ a.payload.channel }}</strong><div class="muted">Team chat · shared channel</div></div></header>
+      <div class="bubble">{{ a.payload.text|linkify }}</div>
+    </article>
+    {% elif a.kind == "invoice" %}
+    <article class="invoice">
+      <header class="mail-head"><span class="row-icon tone-warn">{{ icon("invoice", 16) }}</span><div class="mail-who"><strong>Invoice to {{ a.payload.customer_email }}</strong><div class="muted">Will be issued in the billing system</div></div></header>
+      <table class="data">
+        <thead><tr><th>Line</th><th class="num">Amount</th></tr></thead>
+        <tbody>{% for line in a.payload.get("lines", []) %}<tr><td>{{ line.description }}</td><td class="num">{{ money(line.amount, a.payload.currency) }}</td></tr>{% endfor %}</tbody>
+        <tfoot><tr><td>Total</td><td class="num"><strong>{{ money(a.payload.amount, a.payload.currency) }}</strong></td></tr></tfoot>
+      </table>
+    </article>
+    {% else %}
+    <article class="card pad"><h2>Exact payload</h2><pre class="code">{{ a.payload|tojson(indent=2) }}</pre></article>
+    {% endif %}
+    <p class="fine">This preview is the exact content that will be sent. Its fingerprint is <span class="mono">{{ a.payload_hash[:16] }}</span>; any edit, by a person or an agent, needs a new approval.</p>
+  </div>
+
+  <aside class="split-side">
+    <section class="card pad sticky">
+      <h2>Why a person decides</h2>
+      <p class="muted">{{ a.risk_explain }}</p>
+      <ul class="reasons">{% for r in a.reasons %}<li>{{ icon("dot", 12) }}<span>{{ r[:1]|upper }}{{ r[1:] }}</span></li>{% endfor %}</ul>
+
+      <h3>Who can approve</h3>
+      <ul class="people">
+        {% for p in a.holders %}<li>{{ avatar(p.name, "sm") }}<span><strong>{{ p.name }}</strong><span class="muted">{{ p.title }}</span></span>{% if user and user.id == p.id %}<span class="you">You</span>{% endif %}</li>{% endfor %}
+      </ul>
+
+      {% if a.status == "pending" %}
+        {% if can_decide %}
+        <form method="post" action="/approvals/{{ a.id }}/decide" class="decide">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <label class="field-label" for="note">Note <span class="muted">(optional, kept in the audit log)</span></label>
+          <textarea id="note" name="note" rows="2" placeholder="e.g. Figures checked against the survey notes"></textarea>
+          <div class="decide-buttons">
+            <button class="btn btn-primary" name="decision" value="approve" type="submit">{{ icon("check", 15) }} Approve and send</button>
+            <button class="btn btn-danger" name="decision" value="reject" type="submit">{{ icon("x", 15) }} Reject</button>
+          </div>
+          <p class="fine">Signed as {{ user.name }}. Approving lets the worker send it once and read it back from the destination.</p>
+        </form>
+        {% elif user %}
+        <div class="notice tone-neutral">{{ icon("lock", 15) }}<span>You are signed in as {{ user.name }} ({{ user.title }}). This needs {{ a.roles|join(" or ") }}.</span></div>
+        {% else %}
+        <a class="btn btn-primary btn-block" href="/login?next=/approvals/{{ a.id }}">{{ icon("lock", 15) }} Sign in to decide</a>
+        {% endif %}
+      {% else %}
+        <div class="notice tone-{{ a.status|tone }}">
+          {{ icon("check" if a.status == "approved" else "x", 15) }}
+          <span><strong>{{ a.status|capitalize }}</strong>{% if a.decided_by_name %} by {{ a.decided_by_name }}{% endif %} {{ a.decided_at|rel }}{% if a.note %} — “{{ a.note }}”{% endif %}
+          {% if a.intent_status == "verified" %}<br>Sent once and verified at the destination.{% elif a.status == "approved" %}<br>Queued for the worker.{% endif %}</span>
+        </div>
+      {% endif %}
+
+      <dl class="facts">
+        <div><dt>Action</dt><dd class="mono">{{ a.action }}</dd></div>
+        <div><dt>Run</dt><dd><a class="mono" href="/runs/{{ a.run_id }}">{{ a.run_id|short }}</a></dd></div>
+        <div><dt>Requested</dt><dd>{{ a.requested_at|abs }}</dd></div>
+      </dl>
+    </section>
+  </aside>
+</div>
+{% endblock %}

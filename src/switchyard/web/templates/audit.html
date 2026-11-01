@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% from "macros.html" import icon, pill, empty %}
+{% block title %}Audit log{% endblock %}
+{% block crumbs %}<span>Governance</span><span class="sep">/</span><span>Audit log</span>{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <h1>Audit log</h1>
+    <p class="lede">Every state change, written in the same transaction as the change itself. Each entry carries the fingerprint of the one before, so an edit or deletion anywhere breaks the chain.</p>
+  </div>
+</section>
+
+<section class="chain {{ 'ok' if chain.ok else 'bad' }}">
+  <span class="chain-icon">{{ icon("audit" if chain.ok else "exceptions", 20) }}</span>
+  <div>
+    <p class="chain-title">{% if chain.ok %}Chain intact{% else %}Chain broken at entry {{ chain.first_bad_seq }}{% endif %}</p>
+    <p class="muted">{{ chain.checked }} entries checked{% if head %} · head #{{ head.seq }} <span class="mono">{{ head.hash[:20] }}…</span>{% endif %}{% if not chain.ok %} · {{ chain.reason }}{% endif %}</p>
+  </div>
+  {% if run_filter %}<a class="btn btn-sm" href="/audit">{{ icon("x", 14) }} Clear run filter</a>{% endif %}
+</section>
+
+<section class="card">
+  {% if rows %}
+  <div class="table-wrap">
+  <table class="data audit-table">
+    <thead><tr><th class="num">#</th><th>When</th><th>Who</th><th>What happened</th><th>Event</th></tr></thead>
+    <tbody>
+      {% for e in rows %}
+      <tr>
+        <td class="num mono muted">{{ e.seq }}</td>
+        <td class="nowrap muted" title="{{ e.ts|abs }}">{{ e.ts|rel }}</td>
+        <td class="nowrap">{{ e.actor_label }}</td>
+        <td>
+          <span class="tone-dot tone-{{ e.tone }}"></span>{{ e.text }}
+          {% if e.run_id and not run_filter %}<a class="muted small" href="/audit?run={{ e.run_id }}"> · {{ e.run_id|short }}</a>{% endif %}
+          {% if e.data %}<details class="disclosure inline-details"><summary>data</summary><pre class="code">{{ e.data_json }}</pre></details>{% endif %}
+        </td>
+        <td class="mono small muted">{{ e.event }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}{{ empty("audit", "No entries", "The log starts with the first run.") }}{% endif %}
+</section>
+{% endblock %}

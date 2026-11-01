@@ -148,8 +148,9 @@ class Policy:
                 found = [(RiskClass.INTERNAL_ROUTINE, "every recipient is internal")]
             quote = payload.get("quote_total")
             if outside and quote is not None and quote >= self.company.get("binding_quote_threshold", 0):
+                amount = f"{payload['currency']} {quote:,.0f}" if payload.get("currency") else f"{quote:,.0f}"
                 found.append(
-                    (RiskClass.BINDING_COMMITMENT, f"carries a priced quote ({quote:,.0f}) — an offer to the customer")
+                    (RiskClass.BINDING_COMMITMENT, f"carries a priced quote ({amount}) — an offer to the customer")
                 )
         elif action == "chat.post":
             if payload.get("channel") in self.company.get("external_channels", []):

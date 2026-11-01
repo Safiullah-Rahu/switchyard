@@ -1,0 +1,105 @@
+{% macro icon(name, size=16) -%}
+<svg class="i" width="{{ size }}" height="{{ size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+{%- if name == "overview" %}<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>
+{%- elif name == "approvals" %}<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+{%- elif name == "runs" %}<rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="15" y="15" width="6" height="6" rx="1.5"/><path d="M6 9v3a3 3 0 0 0 3 3h6"/>
+{%- elif name == "exceptions" %}<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/>
+{%- elif name == "audit" %}<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>
+{%- elif name == "costs" %}<path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/>
+{%- elif name == "check" %}<path d="M20 6 9 17l-5-5"/>
+{%- elif name == "x" %}<path d="M18 6 6 18M6 6l12 12"/>
+{%- elif name == "arrow" %}<path d="M5 12h14M13 6l6 6-6 6"/>
+{%- elif name == "back" %}<path d="M19 12H5M11 18l-6-6 6-6"/>
+{%- elif name == "clock" %}<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+{%- elif name == "mail" %}<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>
+{%- elif name == "chat" %}<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+{%- elif name == "doc" %}<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/>
+{%- elif name == "invoice" %}<path d="M6 2h12v20l-3-2-3 2-3-2-3 2z"/><path d="M9 7h6M9 11h6M9 15h4"/>
+{%- elif name == "agent" %}<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 17v4M17 19h4"/>
+{%- elif name == "logout" %}<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/>
+{%- elif name == "sun" %}<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+{%- elif name == "moon" %}<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+{%- elif name == "monitor" %}<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+{%- elif name == "retry" %}<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>
+{%- elif name == "lock" %}<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+{%- elif name == "user" %}<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>
+{%- elif name == "calendar" %}<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+{%- elif name == "external" %}<path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+{%- elif name == "spark" %}<path d="M4 17l5-5 4 4 7-8"/><path d="M14 8h6v6"/>
+{%- elif name == "decision" %}<path d="M6 3v12"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>
+{%- elif name == "dot" %}<circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/>
+{%- endif -%}
+</svg>
+{%- endmacro %}
+
+{% macro pill(text, tone="neutral", dot=True) -%}
+<span class="pill tone-{{ tone }}">{% if dot %}<span class="pill-dot"></span>{% endif %}{{ text }}</span>
+{%- endmacro %}
+
+{% macro status(value, override=None) -%}
+{{ pill(override or (value|status), value|tone) }}
+{%- endmacro %}
+
+{% macro risk_pill(cls) -%}
+{% set r = risk(cls) %}<span class="pill tone-{{ r[1] }} risk"><span class="pill-dot"></span>{{ r[0] }}</span>
+{%- endmacro %}
+
+{% macro progress(segments) -%}
+<span class="progress" role="img" aria-label="{{ segments|selectattr('tone','equalto','ok')|list|length }} of {{ segments|length }} steps done">
+{%- for s in segments %}<span class="seg tone-{{ s.tone }}" title="{{ s.title }}"></span>{% endfor -%}
+</span>
+{%- endmacro %}
+
+{% macro avatar(name, size="md") -%}
+<span class="avatar avatar-{{ size }}" aria-hidden="true">{{ name|initials }}</span>
+{%- endmacro %}
+
+{% macro empty(icon_name, title, body) -%}
+<div class="empty">
+  <span class="empty-icon">{{ icon(icon_name, 20) }}</span>
+  <p class="empty-title">{{ title }}</p>
+  <p class="empty-body">{{ body }}</p>
+</div>
+{%- endmacro %}
+
+{% macro decision_buttons(d, csrf, user, next) -%}
+{% if user %}
+<div class="choice-row">
+  {% for o in d.options %}
+  <form method="post" action="/decisions/{{ d.id }}/answer">
+    <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="choice" value="{{ o.value }}"><input type="hidden" name="next" value="{{ next }}">
+    <button class="btn {{ 'btn-primary' if loop.first else '' }} btn-sm" type="submit">{{ o.label }}</button>
+  </form>
+  {% endfor %}
+</div>
+{% else %}
+<a class="btn btn-sm" href="/login?next={{ next|urlencode }}">{{ icon("lock", 14) }} Sign in to decide</a>
+{% endif %}
+{%- endmacro %}
+
+{% macro approval_row(a) -%}
+<li class="row">
+  <a class="row-link" href="/approvals/{{ a.id }}">
+    <span class="row-icon tone-{{ a.risk_tone }}">{{ icon("mail" if a.kind == "email" else "chat" if a.kind == "chat" else "invoice" if a.kind == "invoice" else "doc", 16) }}</span>
+    <span class="row-main">
+      <span class="row-title">{{ a.action_label }} <span class="muted">·</span> {{ a.subject }}</span>
+      <span class="row-sub">“{{ a.title }}”{% if a.recipients %} to {{ a.recipients|join(", ") }}{% elif a.channel %} in {{ a.channel }}{% endif %}{% if a.amount %} · <strong>{{ a.amount }}</strong>{% endif %}</span>
+      <span class="row-meta">{{ risk_pill(a.risk_class) }}<span>{{ a.roles|join(" or ") }}</span><span>·</span><span>requested {{ a.requested_at|rel }}</span>{% if a.status == "pending" %}<span>·</span><span>expires {{ a.expires_at|rel }}</span>{% endif %}</span>
+    </span>
+    <span class="row-end">{% if a.status == "pending" %}<span class="btn btn-sm">Review {{ icon("arrow", 14) }}</span>{% else %}{{ status(a.status) }}{% endif %}</span>
+  </a>
+</li>
+{%- endmacro %}
+
+{% macro run_line(r) -%}
+<li class="row">
+  <a class="row-link" href="/runs/{{ r.id }}">
+    <span class="row-main">
+      <span class="row-kicker">{{ r.workflow|workflow }}</span>
+      <span class="row-title">{{ r.subject }}</span>
+    </span>
+    <span class="row-progress">{{ progress(r.segments) }}<span class="muted small">{{ r.done }}/{{ r.total }}</span></span>
+    <span class="row-end">{{ status(r.status) }}<span class="muted small nowrap">{{ r.created_at|rel }}</span></span>
+  </a>
+</li>
+{%- endmacro %}

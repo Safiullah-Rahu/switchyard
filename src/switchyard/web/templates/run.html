@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% from "macros.html" import icon, pill, status, risk_pill, progress, empty, decision_buttons %}
+{% block title %}{{ run.subject }} · {{ run.workflow|workflow }}{% endblock %}
+{% block live %}{% if run.status in ("running", "waiting") %}data-live{% endif %}{% endblock %}
+{% block crumbs %}<a href="/runs">Runs</a><span class="sep">/</span><span class="mono">{{ run.id|short }}</span>{% endblock %}
+{% block content %}
+{% set pending_approval = approvals|selectattr("status", "equalto", "pending")|first %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">{{ run.workflow|workflow }} · <span class="mono">{{ run.id }}</span></p>
+    <h1>{{ run.subject }}</h1>
+    <p class="head-meta">{{ status(run.status) }}<span>Started {{ run.created_at|rel }}</span>{% if run.took %}<span>·</span><span>finished in {{ run.took }}</span>{% endif %}<span>·</span><span>Model cost <strong class="mono">{{ cost_total|usd }}</strong></span>
+    {% if parent %}<span>·</span><span>Started by <a href="/runs/{{ parent.id }}">{{ parent.workflow|workflow }}</a></span>{% endif %}</p>
+  </div>
+  <div class="head-progress">{{ progress(run.segments) }}<span class="muted small">{{ run.done }} of {{ run.total }} steps done</span></div>
+</section>
+
+{% if pending_approval %}
+<a class="banner tone-warn" href="/approvals/{{ pending_approval.id }}">
+  {{ icon("approvals", 16) }}<span><strong>Waiting for approval.</strong> {{ pending_approval.action_label }} — “{{ pending_approval.title }}”. {{ pending_approval.roles|join(" or ") }} can decide.</span><span class="banner-cta">Review {{ icon("arrow", 14) }}</span>
+</a>
+{% endif %}
+{% for c in children %}
+<a class="banner tone-info" href="/runs/{{ c.id }}">{{ icon("runs", 16) }}<span>This message started <strong>{{ c.workflow|workflow }}</strong> for {{ c.subject }}.</span><span class="banner-cta">{{ status(c.status) }} {{ icon("arrow", 14) }}</span></a>
+{% endfor %}
+
+<div class="split">
+  <div class="split-main">
+    <section class="card">
+      <header class="card-head"><div><h2>Steps</h2><p class="card-sub">Steps run in dependency order. Any worker can resume any step after a restart.</p></div></header>
+      <ol class="steps">
+        {% for s in steps %}
+        <li class="step tone-{{ s.status|tone }}">
+          <span class="step-node">{{ icon("check" if s.status == "succeeded" else "x" if s.status in ("failed", "blocked") else "clock" if s.status in ("waiting", "retry_wait") else "dot", 13) }}</span>
+          <div class="step-body">
+            <div class="step-top">
+              <span class="step-title">{{ s.title }}</span>
+              {{ status(s.status) }}
+              {% if s.duration %}<span class="muted small">{{ s.duration }}</span>{% endif %}
+              {% if s.attempts > 1 %}<span class="muted small">· {{ s.attempts }} attempts</span>{% endif %}
+              {% if s.revisions %}<span class="muted small">· {{ s.revisions }} revision{{ "s" if s.revisions > 1 }}</span>{% endif %}
+            </div>
+            <p class="step-desc">{{ s.description }}{% if s.depends_on %} <span class="muted">· after {{ s.depends_on|map("step")|join(", ")|lower }}</span>{% endif %}</p>
+            {% for ag in s.agents %}
+            <span class="agent-chip">{{ icon("agent", 13) }} {{ ag.finished_with }}{% if ag.handoffs %} <span class="muted">via {{ ag.started_with }}</span>{% endif %} · <span class="mono">{{ ag.model }}</span> · {{ ag.tool_calls|length }} tool call{{ "" if ag.tool_calls|length == 1 else "s" }}{% if ag.tool_calls %} <span class="muted">({{ ag.tool_calls|unique|join(", ") }})</span>{% endif %} · <span class="mono">{{ ag.cost_usd|usd }}</span></span>
+            {% endfor %}
+            {% if s.facts %}<dl class="mini-facts">{% for k, v in s.facts %}<div><dt>{{ k }}</dt><dd>{{ v }}</dd></div>{% endfor %}</dl>{% endif %}
+            {% if s.status in ("failed", "retry_wait", "blocked") and s.last_error %}<div class="step-error">{{ s.last_error }}</div>{% endif %}
+            {% if s.waiting_kind == "approval" %}<a class="btn btn-sm" href="/approvals/{{ s.waiting_ref }}">{{ icon("approvals", 14) }} Review the approval</a>{% endif %}
+            {% if s.waiting_kind == "decision" %}
+              {% for d in decisions if d.id == s.waiting_ref %}<p class="step-question">{{ d.question }}</p>{{ decision_buttons(d, csrf, user, "/runs/" ~ run.id) }}{% endfor %}
+            {% endif %}
+            {% if s.status == "failed" %}
+              {% if user %}
+              <form method="post" action="/runs/{{ run.id }}/steps/{{ s.name }}/retry" class="inline"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="next" value="/runs/{{ run.id }}"><button class="btn btn-sm" type="submit">{{ icon("retry", 14) }} Retry this step</button></form>
+              {% else %}<a class="btn btn-sm" href="/login?next=/runs/{{ run.id }}">{{ icon("lock", 14) }} Sign in to retry</a>{% endif %}
+            {% endif %}
+          </div>
+        </li>
+        {% endfor %}
+      </ol>
+    </section>
+
+    <section class="card">
+      <header class="card-head"><div><h2>Side effects</h2><p class="card-sub">Every change made in another system. Each one ran once and was read back from its destination.</p></div></header>
+      {% if intents %}
+      <ul class="rows">
+        {% for i in intents %}
+        <li class="row row-static">
+          <span class="row-icon tone-{{ i.status|tone }}">{{ icon("mail" if i.app == "email" else "chat" if i.app == "chat" else "calendar" if i.app == "calendar" else "doc" if i.app == "docs" else "invoice" if i.app == "billing" else "user", 16) }}</span>
+          <span class="row-main">
+            <span class="row-title">{{ i.label }} {% if i.origin == "agent" %}<span class="muted small">· proposed by {{ i.proposed_by.split(":")[1].replace("_", " ") }} agent</span>{% endif %}</span>
+            <span class="row-sub mono">{{ (i.receipt or {}).get("external_id", "not written") }}</span>
+            <span class="row-meta">{% if i.risk_class != "internal_routine" %}{{ risk_pill(i.risk_class) }}{% else %}<span>Internal routine</span>{% endif %}{% if i.attempts > 1 %}<span>·</span><span>{{ i.attempts }} attempts</span>{% endif %}</span>
+          </span>
+          <span class="row-end">{% if i.status == "verified" %}<span class="verified">{{ icon("check", 14) }} Verified</span>{% else %}{{ status(i.status) }}{% endif %}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}{{ empty("doc", "No side effects", "This run has not written to any other system yet.") }}{% endif %}
+    </section>
+
+    <section class="card">
+      <header class="card-head"><div><h2>Activity</h2><p class="card-sub">From the audit log, oldest first.</p></div><a class="link" href="/audit?run={{ run.id }}">Raw entries {{ icon("arrow", 14) }}</a></header>
+      <ol class="feed">
+        {% for e in activity %}
+        <li class="feed-item tone-{{ e.tone }}"><span class="feed-dot"></span><span class="feed-body"><span class="feed-text">{{ e.text }}</span><span class="feed-meta">{{ e.ts|abs }}</span></span></li>
+        {% endfor %}
+      </ol>
+    </section>
+  </div>
+
+  <aside class="split-side">
+    {% if lead %}
+    <section class="card pad">
+      <h2>Lead</h2>
+      <div class="lead-top">{{ pill(lead.qualification|capitalize, "ok" if lead.qualification == "hot" else "warn" if lead.qualification == "warm" else "neutral") }}<span class="muted">{{ lead.segment|capitalize }}</span></div>
+      <dl class="facts">
+        <div><dt>Contact</dt><dd>{{ lead.contact_name }}<br><span class="muted">{{ lead.email }}</span></dd></div>
+        {% if lead.company %}<div><dt>Company</dt><dd>{{ lead.company }}</dd></div>{% endif %}
+        {% if lead.site_address %}<div><dt>Site</dt><dd>{{ lead.site_address }}</dd></div>{% endif %}
+        <div><dt>Annual use</dt><dd>{{ "{:,.0f} kWh".format(lead.annual_consumption_kwh) if lead.annual_consumption_kwh else "—" }}</dd></div>
+        <div><dt>Roof</dt><dd>{{ "{:,.0f} m²".format(lead.roof_area_m2) if lead.roof_area_m2 else "—" }}</dd></div>
+        <div><dt>Interested in</dt><dd>{{ lead.interested_in|join(", ")|replace("_", " ") }}</dd></div>
+        {% if lead.timeline %}<div><dt>Timeline</dt><dd>{{ lead.timeline }}</dd></div>{% endif %}
+        {% if lead.survey_preference %}<div><dt>Survey</dt><dd>{{ lead.survey_preference }}</dd></div>{% endif %}
+      </dl>
+      <p class="fine">{{ lead.rationale }}</p>
+    </section>
+    {% elif case %}
+    <section class="card pad">
+      <h2>Service case</h2>
+      <div class="lead-top">{{ pill(case.urgency|capitalize ~ " urgency", "bad" if case.urgency == "high" else "neutral") }}<span class="muted">{{ case.category|capitalize }}</span></div>
+      <dl class="facts"><div><dt>Customer</dt><dd>{{ case.customer_name or "" }}<br><span class="muted">{{ case.customer_email }}</span></dd></div><div><dt>Summary</dt><dd>{{ case.summary }}</dd></div></dl>
+    </section>
+    {% elif survey %}
+    <section class="card pad">
+      <h2>Survey</h2>
+      <dl class="facts"><div><dt>Surveyor</dt><dd>{{ survey.surveyor }}</dd></div><div><dt>Confirmed size</dt><dd>{{ survey.confirmed_kwp }} kWp</dd></div><div><dt>Roof suitable</dt><dd>{{ "Yes" if survey.roof_ok else "No" }}</dd></div><div><dt>Notes</dt><dd>{{ survey.notes }}</dd></div></dl>
+    </section>
+    {% endif %}
+
+    {% if estimate %}
+    <section class="card pad">
+      <h2>Estimate</h2>
+      <div class="figures">
+        <div><span class="fig-v">{{ estimate.system_kwp }}<small> kWp</small></span><span class="fig-k">System size</span></div>
+        <div><span class="fig-v">{{ estimate.symbol }}{{ "{:,}".format(estimate.annual_savings) }}</span><span class="fig-k">Savings a year</span></div>
+        <div><span class="fig-v">{{ estimate.symbol }}{{ "{:,}".format(estimate.capex) }}</span><span class="fig-k">Installed cost</span></div>
+        <div><span class="fig-v">{{ estimate.payback_years }}<small> yrs</small></span><span class="fig-k">Simple payback</span></div>
+      </div>
+      <p class="fine">{{ "{:,}".format(estimate.annual_generation_kwh) }} kWh a year · {{ estimate.self_consumption_pct }}% used on site{% if estimate.battery_kwh %} · {{ estimate.battery_kwh }} kWh battery{% endif %} · priced with assumptions <span class="mono">{{ estimate.assumptions_version }}</span>. Calculated in code; models only quote it.</p>
+    </section>
+    {% endif %}
+
+    {% if draft %}
+    <section class="card pad">
+      <h2>Proposal draft</h2>
+      <p class="draft-title">{{ draft.title }}</p>
+      <p class="muted">{{ draft.executive_summary }}</p>
+      {% if review %}
+      <ul class="checks">
+        <li class="tone-text-ok">{{ icon("check", 14) }} {{ review.checks.numbers_checked }} numbers traced to the estimate</li>
+        <li class="tone-text-ok">{{ icon("check", 14) }} Independent reviewer: {{ "approved" if review.reviewer.approve else "rejected" }}</li>
+      </ul>
+      <p class="fine">“{{ review.reviewer.summary }}”</p>
+      {% endif %}
+    </section>
+    {% endif %}
+
+    {% if message %}
+    <section class="card pad">
+      <h2>Original message</h2>
+      <p class="muted small">From {{ message.from_name }} &lt;{{ message.from_email }}&gt; · {{ message.source|replace("_", " ") }}</p>
+      <p class="draft-title">{{ message.subject }}</p>
+      <details class="disclosure"><summary>Show the full text</summary><div class="quote">{{ message.body|linkify }}</div></details>
+    </section>
+    {% endif %}
+
+    {% if costs %}
+    <section class="card pad">
+      <h2>Model usage</h2>
+      <table class="data compact">
+        <tbody>{% for c in costs %}<tr><td>{{ c.agent }}<span class="cell-sub mono">{{ c.model }}</span></td><td class="num mono">{{ c.cost_usd|usd }}</td></tr>{% endfor %}</tbody>
+        <tfoot><tr><td>Total{% if costs|selectattr("estimated")|list %} <span class="muted">(estimated)</span>{% endif %}</td><td class="num mono"><strong>{{ cost_total|usd }}</strong></td></tr></tfoot>
+      </table>
+    </section>
+    {% endif %}
+
+    {% if exceptions %}
+    <section class="card pad">
+      <h2>Exceptions</h2>
+      <ul class="plain">{% for x in exceptions %}<li>{{ pill(x.status|capitalize, x.status|tone) }} <strong>{{ x.kind|kind }}</strong><br><span class="muted small">{{ x.message }}</span></li>{% endfor %}</ul>
+    </section>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}

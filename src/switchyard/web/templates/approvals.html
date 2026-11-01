@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% from "macros.html" import icon, pill, empty, approval_row, decision_buttons %}
+{% block title %}Approvals{% endblock %}
+{% block live %}data-live{% endblock %}
+{% block crumbs %}<span>Approvals</span>{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <h1>Approvals</h1>
+    <p class="lede">Actions that policy will not run without a named person. Each approval covers one exact piece of content: if it changes, a new approval is needed.</p>
+  </div>
+</section>
+
+<nav class="tabs" aria-label="Approval views">
+  <a href="/approvals" {% if view != "decided" %}aria-current="page"{% endif %}>Waiting <span class="tab-count">{{ pending|length + decisions|length }}</span></a>
+  <a href="/approvals?view=decided" {% if view == "decided" %}aria-current="page"{% endif %}>Decided <span class="tab-count">{{ decided|length }}</span></a>
+</nav>
+
+{% if view == "decided" %}
+<section class="card">
+  {% if decided %}<ul class="rows">{% for a in decided %}{{ approval_row(a) }}{% endfor %}</ul>
+  {% else %}{{ empty("approvals", "No decisions yet", "Approved and rejected requests will be listed here with who decided and when.") }}{% endif %}
+</section>
+{% else %}
+<section class="card">
+  {% if pending or decisions %}
+  <ul class="rows">
+    {% for a in pending %}{{ approval_row(a) }}{% endfor %}
+    {% for d in decisions %}
+    <li class="row row-static">
+      <span class="row-icon tone-warn">{{ icon("decision", 16) }}</span>
+      <span class="row-main">
+        <span class="row-title">Decision needed <span class="muted">·</span> {{ d.subject }}</span>
+        <span class="row-sub">{{ d.question }}</span>
+        <span class="row-meta">{{ pill("Needs a decision", "warn") }}<span>{{ d.workflow|workflow }}</span><span>·</span><span>asked {{ d.created_at|rel }}</span><span>·</span><a href="/runs/{{ d.run_id }}">Open run</a></span>
+      </span>
+      <span class="row-end">{{ decision_buttons(d, csrf, user, "/approvals") }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  {{ empty("check", "You are all caught up", "Nothing is waiting for approval. New requests also post to #approvals in team chat.") }}
+  {% endif %}
+</section>
+{% endif %}
+
+<section class="explain">
+  <div class="explain-item"><span class="explain-k">{{ icon("lock", 15) }} Enforced in code</span><p>The executor re-checks every action when it runs. A prompt cannot skip an approval.</p></div>
+  <div class="explain-item"><span class="explain-k">{{ icon("audit", 15) }} Signed and bound</span><p>Each decision is signed and tied to a fingerprint of the exact content that will be sent.</p></div>
+  <div class="explain-item"><span class="explain-k">{{ icon("user", 15) }} Role-checked twice</span><p>Roles are checked when someone decides and again at the moment the action runs.</p></div>
+</section>
+{% endblock %}

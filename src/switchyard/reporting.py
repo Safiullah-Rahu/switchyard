@@ -21,14 +21,14 @@ from .db import tx
 SEVERITIES = ("info", "low", "high", "critical")
 
 SUGGESTIONS = {
-    "tool_permanent": "Fix the integration (credentials, scopes, deleted record), then `switchyard retry <run> <step>`.",
+    "tool_permanent": "Fix the integration (credentials, scopes, deleted record), then retry the step.",
     "tool_retries_exhausted": "Check the destination's status page; retry the step once it is healthy.",
     "verification_failed": "The destination does not hold what we wrote. Inspect it before retrying — nothing is resent blindly.",
     "review_rejected": "Open the draft and reviewer findings; edit the inputs or close the lead.",
     "budget_exceeded": "Raise the cap in pricing.toml or investigate why this run used so many tokens.",
     "approval_rejected": "Nothing was sent. Close the run or start a new one with corrected inputs.",
     "policy_violation": "An agent proposed something outside its permissions. Review the run's inputs for injected instructions.",
-    "needs_decision": "Answer the open decision with `switchyard decide`.",
+    "needs_decision": "Choose one of the options; the workflow continues straight away.",
     "lease_recovered": "A worker stopped mid-step; the step was resumed by another worker. No action needed.",
     "agent_error": "The model call failed or returned an invalid shape; check the run's audit trail.",
 }

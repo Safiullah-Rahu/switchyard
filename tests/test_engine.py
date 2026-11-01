@@ -147,3 +147,24 @@ async def test_zombie_worker_cannot_act_or_commit_after_losing_its_lease(setting
     assert [m["text"] for m in healthy.reads.chat_history("#t")] == ["from healthy"]
     assert healthy.step_output(run_id, "a") == {"by": "healthy"}
     assert any(e["event"] == "step.lease_lost" for e in healthy.audit.entries(run_id))
+
+
+async def test_long_steps_keep_their_lease_alive(settings):
+    """A slow model call must not let a second worker take the step over."""
+    settings.lease_seconds = 0.6
+    calls = []
+
+    async def slow(ctx):
+        calls.append(ctx.engine.worker_id)
+        await asyncio.sleep(1.6)  # longer than the lease
+        return Done({"by": ctx.engine.worker_id})
+
+    flow = wf(StepDef("a", slow))
+    first = Engine(settings, [flow], worker_id="first")
+    run_id, _ = first.start_run("wf", {})
+    running = asyncio.create_task(first.tick())
+    await asyncio.sleep(1.1)
+    other = Engine(settings, [flow], worker_id="other")
+    assert await other.tick() == 0  # the heartbeat kept the lease fresh
+    await running
+    assert calls == ["first"] and first.step_output(run_id, "a") == {"by": "first"}

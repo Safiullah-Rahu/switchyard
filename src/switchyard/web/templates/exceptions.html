@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% from "macros.html" import icon, pill, empty, decision_buttons %}
+{% block title %}Exceptions{% endblock %}
+{% block live %}data-live{% endblock %}
+{% block crumbs %}<span>Exceptions</span>{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <h1>Exceptions</h1>
+    <p class="lede">One queue for everything a person should know about. Each entry says what happened and what to do next; high-severity ones are also posted once to #ops-exceptions.</p>
+  </div>
+</section>
+
+<nav class="tabs" aria-label="Exception views">
+  <a href="/exceptions" {% if view == "open" %}aria-current="page"{% endif %}>Open</a>
+  <a href="/exceptions?view=resolved" {% if view != "open" %}aria-current="page"{% endif %}>Resolved</a>
+</nav>
+
+{% if items %}
+<div class="stack">
+  {% for x in items %}
+  <article class="card exception">
+    <div class="exception-head">
+      <span class="row-icon tone-{{ 'warn' if x.kind == 'needs_decision' else x.severity|tone }}">{{ icon("decision" if x.kind == "needs_decision" else "exceptions", 16) }}</span>
+      <div class="exception-title">
+        <h2>{{ x.kind|kind }}</h2>
+        <p class="row-meta">{{ pill(x.severity|capitalize, x.severity|tone) }}{% if x.run_id %}<a href="/runs/{{ x.run_id }}">{{ x.subject or x.run_id|short }}</a><span>·</span><span>{{ x.workflow|workflow }}</span><span>·</span>{% endif %}{% if x.step %}<span>{{ x.step|step }}</span><span>·</span>{% endif %}<span>{{ x.created_at|rel }}</span></p>
+      </div>
+    </div>
+    <p class="exception-msg">{{ x.message }}</p>
+    {% if x.suggested_action %}<p class="next-step">{{ icon("arrow", 14) }}<span><strong>Next step:</strong> {{ x.suggested_action }}</span></p>{% endif %}
+    {% if view == "open" %}
+    <div class="exception-actions">
+      {% if x.decision %}{{ decision_buttons(x.decision, csrf, user, "/exceptions") }}{% endif %}
+      {% if user %}
+        {% if x.can_retry %}
+        <form method="post" action="/runs/{{ x.run_id }}/steps/{{ x.step }}/retry"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="next" value="/exceptions"><button class="btn btn-sm btn-primary" type="submit">{{ icon("retry", 14) }} Retry the step</button></form>
+        {% endif %}
+        {% if not x.decision %}
+        <form method="post" action="/exceptions/{{ x.id }}/resolve"><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="next" value="/exceptions"><button class="btn btn-sm" type="submit">{{ icon("check", 14) }} Mark resolved</button></form>
+        {% endif %}
+      {% elif not x.decision %}
+        <a class="btn btn-sm" href="/login?next=/exceptions">{{ icon("lock", 14) }} Sign in to act</a>
+      {% endif %}
+      {% if x.run_id %}<a class="btn btn-sm btn-ghost" href="/runs/{{ x.run_id }}">Open run {{ icon("arrow", 14) }}</a>{% endif %}
+    </div>
+    {% else %}
+    <p class="fine">Resolved {{ x.resolved_at|rel }}{% if x.resolved_by %} by {{ x.resolved_by }}{% endif %}.</p>
+    {% endif %}
+  </article>
+  {% endfor %}
+</div>
+{% else %}
+<section class="card">{{ empty("check", "No open exceptions" if view == "open" else "Nothing resolved yet", "Integration failures, review rejections, budget stops and policy refusals appear here." if view == "open" else "Resolved exceptions are kept here for reference.") }}</section>
+{% endif %}
+{% if view == "open" and info_count %}<p class="fine center">{{ info_count }} informational {{ "entry" if info_count == 1 else "entries" }} (for example a worker restart that was resumed automatically) are in the audit log.</p>{% endif %}
+{% endblock %}

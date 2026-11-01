@@ -54,7 +54,8 @@ Nothing a model writes can change this path. The class comes from the action nam
   links to the review page.
 - The review page shows exactly what will be sent, why it needs a person, who can approve it, and the
   payload hash.
-- The decision can be made in the console, through the API (`POST /approvals/{id}/decision`), or from the
+- The decision can be made in the console (sign in, review, one click), through the API
+  (`POST /api/approvals/{id}/decision` with an approver token), or from the
   CLI on the server.
 - In production, the token box becomes SSO (Google Workspace or Microsoft Entra ID), and approvals can
   also be offered as Slack or Teams buttons that call the same endpoint. Signing and checks are unchanged.

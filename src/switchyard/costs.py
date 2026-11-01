@@ -126,5 +126,5 @@ class CostMeter:
         if run_id:
             sql += " WHERE run_id = ?"
             args.append(run_id)
-        sql += " GROUP BY agent, model ORDER BY cost_usd DESC"
+        sql += " GROUP BY agent, model, estimated ORDER BY cost_usd DESC"
         return [dict(r) for r in self.conn.execute(sql, args)]

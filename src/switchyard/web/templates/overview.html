@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% from "macros.html" import icon, pill, status, risk_pill, progress, empty, approval_row, run_line, decision_buttons %}
+{% block title %}Overview{% endblock %}
+{% block live %}data-live{% endblock %}
+{% block crumbs %}<span>Overview</span>{% endblock %}
+{% block content %}
+{% set waiting_count = approvals|length + decisions|length %}
+<section class="hero">
+  <p class="eyebrow">Operations · {{ env.company }}</p>
+  <h1>{{ greeting }}{% if user %}, {{ user.name|first_name }}{% endif %}.</h1>
+  <p class="lede">
+    {% if counts.attention %}{{ counts.attention }} {{ "item is" if counts.attention == 1 else "items are" }} waiting for a person.{% else %}Nothing is waiting for a person.{% endif %}
+    {{ metrics.completed }} {{ "run" if metrics.completed == 1 else "runs" }} completed in the last 24 hours{% if metrics.failed %}, {{ metrics.failed }} stopped with a failure{% endif %}.
+    Routine internal work runs on its own; external messages, commitments and disclosures wait for an approver.
+  </p>
+</section>
+
+<section class="metrics" aria-label="Key figures">
+  <a class="metric" href="/runs?status=running"><span class="metric-label">In progress</span><span class="metric-value">{{ metrics.running }}</span><span class="metric-foot">runs moving now</span></a>
+  <a class="metric" href="/approvals"><span class="metric-label">Waiting on people</span><span class="metric-value">{{ counts.attention }}</span><span class="metric-foot">{{ metrics.waiting }} {{ "run" if metrics.waiting == 1 else "runs" }} paused for approval</span></a>
+  <a class="metric" href="/runs?status=succeeded"><span class="metric-label">Completed · 24 h</span><span class="metric-value">{{ metrics.completed }}</span><span class="metric-foot">every write verified</span></a>
+  <a class="metric" href="/exceptions"><span class="metric-label">Open exceptions</span><span class="metric-value {{ 'tone-text-bad' if counts.exceptions }}">{{ counts.exceptions }}</span><span class="metric-foot">{{ metrics.failed }} failed {{ "run" if metrics.failed == 1 else "runs" }}</span></a>
+  <a class="metric" href="/costs"><span class="metric-label">Model spend today</span><span class="metric-value">{{ metrics.spend|usd }}</span>
+    {% set pct = (metrics.spend / metrics.cap * 100) if metrics.cap else 0 %}
+    <span class="meter" aria-label="{{ '%.1f'|format(pct) }}% of the daily cap"><span style="width: {{ [pct, 100]|min }}%"></span></span>
+    <span class="metric-foot">of {{ metrics.cap|usd }} daily cap</span></a>
+</section>
+
+<section class="card">
+  <header class="card-head">
+    <div><h2>Waiting for you</h2><p class="card-sub">Only what policy reserves for people: messages to customers, binding commitments, sensitive disclosures and decisions with consequences.</p></div>
+    <a class="link" href="/approvals">All approvals {{ icon("arrow", 14) }}</a>
+  </header>
+  {% if approvals or decisions %}
+  <ul class="rows">
+    {% for a in approvals %}{{ approval_row(a) }}{% endfor %}
+    {% for d in decisions %}
+    <li class="row row-static">
+      <span class="row-icon tone-warn">{{ icon("decision", 16) }}</span>
+      <span class="row-main">
+        <span class="row-title">Decision needed <span class="muted">·</span> {{ d.subject }}</span>
+        <span class="row-sub">{{ d.question }}</span>
+        <span class="row-meta">{{ pill("Needs a decision", "warn") }}<span>{{ d.workflow|workflow }}</span><span>·</span><span>asked {{ d.created_at|rel }}</span></span>
+      </span>
+      <span class="row-end">{{ decision_buttons(d, csrf, user, "/") }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  {{ empty("check", "Nothing needs you right now", "Routine work is running on its own. Anything that leaves the company or commits money will appear here first.") }}
+  {% endif %}
+</section>
+
+<div class="grid-2">
+  <section class="card">
+    <header class="card-head"><div><h2>Recent runs</h2><p class="card-sub">Each run is one enquiry, case or job moving through its workflow.</p></div><a class="link" href="/runs">All runs {{ icon("arrow", 14) }}</a></header>
+    {% if recent %}
+    <ul class="rows">{% for r in recent %}{{ run_line(r) }}{% endfor %}</ul>
+    {% else %}
+    {{ empty("runs", "No runs yet", "Send a signed webhook to /webhooks/inbound, or run `switchyard submit bakery`.") }}
+    {% endif %}
+  </section>
+
+  <section class="card">
+    <header class="card-head"><div><h2>Activity</h2><p class="card-sub">What agents, the engine and people did, newest first.</p></div><a class="link" href="/audit">Audit log {{ icon("arrow", 14) }}</a></header>
+    {% if activity %}
+    <ol class="feed">
+      {% for e in activity %}
+      <li class="feed-item tone-{{ e.tone }}">
+        <span class="feed-dot"></span>
+        <span class="feed-body"><span class="feed-text">{{ e.text }}</span>
+          <span class="feed-meta">{% if e.run_id %}<a href="/runs/{{ e.run_id }}">{{ e.subject or e.run_id|short }}</a> · {% endif %}{{ e.ts|rel }}</span></span>
+      </li>
+      {% endfor %}
+    </ol>
+    {% else %}
+    {{ empty("audit", "Quiet so far", "Events appear here as soon as the first run starts.") }}
+    {% endif %}
+    <footer class="card-foot">
+      {% if chain.ok %}<span class="tone-text-ok">{{ icon("audit", 14) }}</span> Audit chain intact · {{ chain.checked }} entries, each linked to the one before
+      {% else %}<span class="tone-text-bad">{{ icon("exceptions", 14) }}</span> Audit chain broken at entry {{ chain.first_bad_seq }}{% endif %}
+    </footer>
+  </section>
+</div>
+
+{% if exceptions %}
+<section class="card">
+  <header class="card-head"><div><h2>Open exceptions</h2><p class="card-sub">Each one says what happened and what to do next.</p></div><a class="link" href="/exceptions">All exceptions {{ icon("arrow", 14) }}</a></header>
+  <ul class="rows">
+    {% for x in exceptions %}
+    <li class="row"><a class="row-link" href="/exceptions">
+      <span class="row-icon tone-bad">{{ icon("exceptions", 16) }}</span>
+      <span class="row-main"><span class="row-title">{{ x.kind|kind }}</span><span class="row-sub">{{ x.message }}</span></span>
+      <span class="row-end">{{ pill(x.severity|capitalize, x.severity|tone) }}<span class="muted small nowrap">{{ x.created_at|rel }}</span></span>
+    </a></li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+{% endblock %}

@@ -34,45 +34,45 @@ _Routine work runs on its own; one person approves the one external, binding act
 - ✅ After the sales lead approves, the run completes
 - ✅ The customer received exactly one email
 - ✅ Every side effect was read back and verified at its destination — `9 intents`
-- ✅ Token cost was recorded per agent — `$0.0218 (offline estimate)`
+- ✅ Token cost was recorded per agent — `$0.0220 (offline estimate)`
 - ✅ The audit chain verifies end to end
 
 <details><summary>Audit timeline</summary>
 
 ```
-+-0.00s  run run_1a197a8e25af91af5 started: inbound_triage
-+ 3.86s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
-+ 3.86s  run run_1a197a8f16ec280bd started: lead_to_proposal (child of run_1a197a8e25af91af5)
-+ 3.87s  crm.upsert_contact [contact]: written → ct_1a197a8f170581012
-+ 3.87s  crm.upsert_contact [contact]: read back and verified at the destination
-+ 3.87s  crm.create_deal [deal]: written → dl_1a197a8f176bc3b7a
-+ 3.87s  crm.create_deal [deal]: read back and verified at the destination
-+ 3.88s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
-+ 3.89s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
-+ 3.90s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
-+ 3.90s  calendar.create_event [survey_hold]: written → edsluohm6crmaeb4c8pjaopg74ojacj264sj4p9k6kp6cp1g75gm4p9n
-+ 3.90s  calendar.create_event [survey_hold]: read back and verified at the destination
-+ 3.91s  docs.create [proposal_doc]: written → doc_1a197a8f198c0b6fd
-+ 3.91s  docs.create [proposal_doc]: read back and verified at the destination
-+ 3.91s  email.send classified binding_commitment — recipient outside the company: priya.shah@northgatebakery.example.com; carries a priced quote (54,900) — an offer to the customer
-+ 3.91s  approval apr_1a197a8f19d27606b requested for email.send (binding_commitment) from sales_lead, finance
-+ 3.91s  step send_proposal waiting on approval:apr_1a197a8f19d27606b
-+ 3.91s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793545793.950600
-+ 3.91s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
-+ 3.92s  chat.post [approval:apr_1a197a8f19d27606b]: written → 1793545793.954599
-+ 3.92s  chat.post [approval:apr_1a197a8f19d27606b]: read back and verified at the destination
-+ 3.92s  run run_1a197a8e25af91af5 succeeded
-+ 3.92s  approval apr_1a197a8f19d27606b approved by maya.patel
-+ 3.92s  step send_proposal resumed by maya.patel
-+ 3.92s  email.send [proposal_email]: written → em_1a197a8f1a73e4e0f
-+ 3.92s  email.send [proposal_email]: read back and verified at the destination
-+ 3.92s  crm.update_deal_stage [stage]: written → dl_1a197a8f176bc3b7a
-+ 3.92s  crm.update_deal_stage [stage]: read back and verified at the destination
-+ 3.93s  crm.add_note [sent_note]: written → nt_1a197a8f1af1d32ed
-+ 3.93s  crm.add_note [sent_note]: read back and verified at the destination
-+ 3.93s  chat.post [sent_notice]: written → 1793545793.972602
-+ 3.93s  chat.post [sent_notice]: read back and verified at the destination
-+ 3.93s  run run_1a197a8f16ec280bd succeeded
++ 0.00s  run run_1a197ccf4bcc1122a started: inbound_triage
++ 2.61s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
++ 2.61s  run run_1a197ccfef04e1e70 started: lead_to_proposal (child of run_1a197ccf4bcc1122a)
++ 2.62s  crm.upsert_contact [contact]: written → ct_1a197ccfef13ad7b9
++ 2.62s  crm.upsert_contact [contact]: read back and verified at the destination
++ 2.62s  crm.create_deal [deal]: written → dl_1a197ccfef6613a88
++ 2.62s  crm.create_deal [deal]: read back and verified at the destination
++ 2.63s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
++ 2.64s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
++ 2.64s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
++ 2.65s  calendar.create_event [survey_hold]: written → edsluoj664s30d1p74qm8c9j69hjie1i65j36eb56sr62ob6c8qm4p1m
++ 2.65s  calendar.create_event [survey_hold]: read back and verified at the destination
++ 2.65s  docs.create [proposal_doc]: written → doc_1a197ccff139cb23b
++ 2.65s  docs.create [proposal_doc]: read back and verified at the destination
++ 2.65s  email.send classified binding_commitment — recipient outside the company: priya.shah@northgatebakery.example.com; carries a priced quote (GBP 54,900) — an offer to the customer
++ 2.65s  approval apr_1a197ccff1775682b requested for email.send (binding_commitment) from sales_lead, finance
++ 2.65s  step send_proposal waiting on approval:apr_1a197ccff1775682b
++ 2.66s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793548156.696499
++ 2.66s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
++ 2.66s  chat.post [approval:apr_1a197ccff1775682b]: written → 1793548156.699498
++ 2.66s  chat.post [approval:apr_1a197ccff1775682b]: read back and verified at the destination
++ 2.66s  run run_1a197ccf4bcc1122a succeeded
++ 2.66s  approval apr_1a197ccff1775682b approved by maya.patel
++ 2.66s  step send_proposal resumed by maya.patel
++ 2.66s  email.send [proposal_email]: written → em_1a197ccff20b43904
++ 2.66s  email.send [proposal_email]: read back and verified at the destination
++ 2.67s  crm.update_deal_stage [stage]: written → dl_1a197ccfef6613a88
++ 2.67s  crm.update_deal_stage [stage]: read back and verified at the destination
++ 2.67s  crm.add_note [sent_note]: written → nt_1a197ccff28b6cd3f
++ 2.67s  crm.add_note [sent_note]: read back and verified at the destination
++ 2.68s  chat.post [sent_notice]: written → 1793548156.716498
++ 2.68s  chat.post [sent_notice]: read back and verified at the destination
++ 2.68s  run run_1a197ccfef04e1e70 succeeded
 ```
 
 </details>
@@ -94,49 +94,49 @@ _Webhook retries, double submissions and reworded resends never create a second 
 <details><summary>Audit timeline</summary>
 
 ```
-+ 0.21s  run run_1a197a8f33edf59c8 started: inbound_triage
-+ 0.21s  webhook redelivery of event evt-1001 ignored
-+ 0.22s  webhook redelivery of event evt-1001 ignored
-+ 0.22s  webhook with a bad signature rejected (401)
-+ 0.23s  duplicate business event suppressed → existing run run_1a197a8f33edf59c8
-+ 1.57s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
-+ 1.57s  run run_1a197a8f891d73ed3 started: lead_to_proposal (child of run_1a197a8f33edf59c8)
-+ 1.58s  crm.upsert_contact [contact]: written → ct_1a197a8f8937b1fb8
-+ 1.58s  crm.upsert_contact [contact]: read back and verified at the destination
-+ 1.58s  crm.create_deal [deal]: written → dl_1a197a8f89757cd5a
-+ 1.58s  crm.create_deal [deal]: read back and verified at the destination
-+ 1.59s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
-+ 1.60s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
-+ 1.61s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
-+ 1.62s  calendar.create_event [survey_hold]: written → edsluc9l6cpm8eb265h3ed32clhmap1kcks32p1g6goj8oph6sr62cr1
-+ 1.62s  calendar.create_event [survey_hold]: read back and verified at the destination
-+ 1.62s  docs.create [proposal_doc]: written → doc_1a197a8f8c1e905ac
-+ 1.62s  docs.create [proposal_doc]: read back and verified at the destination
-+ 1.62s  email.send classified binding_commitment — recipient outside the company: priya.shah@northgatebakery.example.com; carries a priced quote (54,900) — an offer to the customer
-+ 1.62s  approval apr_1a197a8f8c5a2d81c requested for email.send (binding_commitment) from sales_lead, finance
-+ 1.62s  step send_proposal waiting on approval:apr_1a197a8f8c5a2d81c
-+ 1.63s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793545795.782763
-+ 1.63s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
-+ 1.63s  chat.post [approval:apr_1a197a8f8c5a2d81c]: written → 1793545795.788275
-+ 1.63s  chat.post [approval:apr_1a197a8f8c5a2d81c]: read back and verified at the destination
-+ 1.63s  run run_1a197a8f33edf59c8 succeeded
-+ 1.63s  run run_1a197a8f8d2a664f5 started: inbound_triage
-+ 1.65s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
-+ 1.65s  duplicate business event suppressed → existing run run_1a197a8f891d73ed3
-+ 1.65s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793545795.810033
-+ 1.65s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
-+ 1.65s  run run_1a197a8f8d2a664f5 succeeded
-+ 1.66s  approval apr_1a197a8f8c5a2d81c approved by maya.patel
-+ 1.66s  step send_proposal resumed by maya.patel
-+ 1.66s  email.send [proposal_email]: written → em_1a197a8f8eaf23419
-+ 1.66s  email.send [proposal_email]: read back and verified at the destination
-+ 1.67s  crm.update_deal_stage [stage]: written → dl_1a197a8f89757cd5a
-+ 1.67s  crm.update_deal_stage [stage]: read back and verified at the destination
-+ 1.67s  crm.add_note [sent_note]: written → nt_1a197a8f8f3c415b9
-+ 1.67s  crm.add_note [sent_note]: read back and verified at the destination
-+ 1.68s  chat.post [sent_notice]: written → 1793545795.832055
-+ 1.68s  chat.post [sent_notice]: read back and verified at the destination
-+ 1.68s  run run_1a197a8f891d73ed3 succeeded
++ 0.17s  run run_1a197cd0063a835f2 started: inbound_triage
++ 0.17s  webhook redelivery of event evt-1001 ignored
++ 0.17s  webhook redelivery of event evt-1001 ignored
++ 0.18s  webhook with a bad signature rejected (401)
++ 0.18s  duplicate business event suppressed → existing run run_1a197cd0063a835f2
++ 1.03s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
++ 1.03s  run run_1a197cd03c0e3912e started: lead_to_proposal (child of run_1a197cd0063a835f2)
++ 1.03s  crm.upsert_contact [contact]: written → ct_1a197cd03c297bea4
++ 1.03s  crm.upsert_contact [contact]: read back and verified at the destination
++ 1.04s  crm.create_deal [deal]: written → dl_1a197cd03c618352f
++ 1.04s  crm.create_deal [deal]: read back and verified at the destination
++ 1.05s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
++ 1.05s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
++ 1.06s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
++ 1.06s  calendar.create_event [survey_hold]: written → edslucr664pjcohhcgpjgdj4c8om8e1g70r30dpjccpjipj161ij0p9g
++ 1.06s  calendar.create_event [survey_hold]: read back and verified at the destination
++ 1.07s  docs.create [proposal_doc]: written → doc_1a197cd03e38d3c26
++ 1.07s  docs.create [proposal_doc]: read back and verified at the destination
++ 1.07s  email.send classified binding_commitment — recipient outside the company: priya.shah@northgatebakery.example.com; carries a priced quote (GBP 54,900) — an offer to the customer
++ 1.07s  approval apr_1a197cd03e748ad04 requested for email.send (binding_commitment) from sales_lead, finance
++ 1.07s  step send_proposal waiting on approval:apr_1a197cd03e748ad04
++ 1.07s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793548157.928664
++ 1.07s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
++ 1.08s  chat.post [approval:apr_1a197cd03e748ad04]: written → 1793548157.932663
++ 1.08s  chat.post [approval:apr_1a197cd03e748ad04]: read back and verified at the destination
++ 1.08s  run run_1a197cd0063a835f2 succeeded
++ 1.08s  run run_1a197cd03f172308e started: inbound_triage
++ 1.09s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
++ 1.09s  duplicate business event suppressed → existing run run_1a197cd03c0e3912e
++ 1.09s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793548157.951711
++ 1.09s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
++ 1.09s  run run_1a197cd03f172308e succeeded
++ 1.09s  approval apr_1a197cd03e748ad04 approved by maya.patel
++ 1.10s  step send_proposal resumed by maya.patel
++ 1.10s  email.send [proposal_email]: written → em_1a197cd04030a3736
++ 1.10s  email.send [proposal_email]: read back and verified at the destination
++ 1.10s  crm.update_deal_stage [stage]: written → dl_1a197cd03c618352f
++ 1.10s  crm.update_deal_stage [stage]: read back and verified at the destination
++ 1.11s  crm.add_note [sent_note]: written → nt_1a197cd040bf0ffb7
++ 1.11s  crm.add_note [sent_note]: read back and verified at the destination
++ 1.11s  chat.post [sent_notice]: written → 1793548157.967386
++ 1.11s  chat.post [sent_notice]: read back and verified at the destination
++ 1.11s  run run_1a197cd03c0e3912e succeeded
 ```
 
 </details>
@@ -157,41 +157,41 @@ _A process dying between 'sent' and 'recorded' does not cause a second send._
 <details><summary>Audit timeline</summary>
 
 ```
-+ 0.00s  run run_1a197a8fa0df7e4af started: inbound_triage
-+ 1.33s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
-+ 1.33s  run run_1a197a8ff40b307f5 started: lead_to_proposal (child of run_1a197a8fa0df7e4af)
-+ 1.34s  crm.upsert_contact [contact]: written → ct_1a197a8ff42a74976
-+ 1.34s  crm.upsert_contact [contact]: read back and verified at the destination
-+ 1.34s  crm.create_deal [deal]: written → dl_1a197a8ff46455fd8
-+ 1.34s  crm.create_deal [deal]: read back and verified at the destination
-+ 1.35s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
-+ 1.35s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
-+ 1.36s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
-+ 1.37s  calendar.create_event [survey_hold]: written → edsluphi6kqjec3464s38dph6co66p1hcgp38cppckqjeoj2c9gm2opm
-+ 1.37s  calendar.create_event [survey_hold]: read back and verified at the destination
-+ 1.37s  docs.create [proposal_doc]: written → doc_1a197a8ff669206ea
-+ 1.37s  docs.create [proposal_doc]: read back and verified at the destination
-+ 1.37s  email.send classified binding_commitment — recipient outside the company: priya.shah@northgatebakery.example.com; carries a priced quote (54,900) — an offer to the customer
-+ 1.37s  approval apr_1a197a8ff6bd6daed requested for email.send (binding_commitment) from sales_lead, finance
-+ 1.37s  step send_proposal waiting on approval:apr_1a197a8ff6bd6daed
-+ 1.38s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793545797.483723
-+ 1.38s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
-+ 1.38s  chat.post [approval:apr_1a197a8ff6bd6daed]: written → 1793545797.487723
-+ 1.38s  chat.post [approval:apr_1a197a8ff6bd6daed]: read back and verified at the destination
-+ 1.38s  run run_1a197a8fa0df7e4af succeeded
-+ 1.38s  approval apr_1a197a8ff6bd6daed approved by maya.patel
-+ 1.38s  step send_proposal resumed by maya.patel
-+ 3.43s  lease on send_proposal held by worker-1 expired — step resumed by a new worker
-+ 3.43s  exception [info] lease_recovered
-+ 3.44s  reconciled with destination before acting again: already there → adopted, not resent
-+ 3.44s  email.send [proposal_email]: read back and verified at the destination
-+ 3.44s  crm.update_deal_stage [stage]: written → dl_1a197a8ff46455fd8
-+ 3.44s  crm.update_deal_stage [stage]: read back and verified at the destination
-+ 3.45s  crm.add_note [sent_note]: written → nt_1a197a90783d946b5
-+ 3.45s  crm.add_note [sent_note]: read back and verified at the destination
-+ 3.45s  chat.post [sent_notice]: written → 1793545799.560010
-+ 3.45s  chat.post [sent_notice]: read back and verified at the destination
-+ 3.46s  run run_1a197a8ff40b307f5 succeeded
++ 0.00s  run run_1a197cd049dd228d3 started: inbound_triage
++ 0.84s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
++ 0.84s  run run_1a197cd07e79288ac started: lead_to_proposal (child of run_1a197cd049dd228d3)
++ 0.85s  crm.upsert_contact [contact]: written → ct_1a197cd07e8e08f0c
++ 0.85s  crm.upsert_contact [contact]: read back and verified at the destination
++ 0.85s  crm.create_deal [deal]: written → dl_1a197cd07ec52fffb
++ 0.85s  crm.create_deal [deal]: read back and verified at the destination
++ 0.86s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
++ 0.87s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
++ 0.87s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
++ 0.88s  calendar.create_event [survey_hold]: written → edsluopp64om4dhjchhmap9iccq3cphh6hi36cr6ccsm2chn69j3cchj
++ 0.88s  calendar.create_event [survey_hold]: read back and verified at the destination
++ 0.88s  docs.create [proposal_doc]: written → doc_1a197cd0809c3706d
++ 0.88s  docs.create [proposal_doc]: read back and verified at the destination
++ 0.88s  email.send classified binding_commitment — recipient outside the company: priya.shah@northgatebakery.example.com; carries a priced quote (GBP 54,900) — an offer to the customer
++ 0.88s  approval apr_1a197cd080d574a51 requested for email.send (binding_commitment) from sales_lead, finance
++ 0.88s  step send_proposal waiting on approval:apr_1a197cd080d574a51
++ 0.88s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793548158.989205
++ 0.88s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
++ 0.89s  chat.post [approval:apr_1a197cd080d574a51]: written → 1793548158.992205
++ 0.89s  chat.post [approval:apr_1a197cd080d574a51]: read back and verified at the destination
++ 0.89s  run run_1a197cd049dd228d3 succeeded
++ 0.89s  approval apr_1a197cd080d574a51 approved by maya.patel
++ 0.89s  step send_proposal resumed by maya.patel
++ 2.84s  lease on send_proposal held by worker-1 expired — step resumed by a new worker
++ 2.84s  exception [info] lease_recovered
++ 2.84s  reconciled with destination before acting again: already there → adopted, not resent
++ 2.84s  email.send [proposal_email]: read back and verified at the destination
++ 2.85s  crm.update_deal_stage [stage]: written → dl_1a197cd07ec52fffb
++ 2.85s  crm.update_deal_stage [stage]: read back and verified at the destination
++ 2.85s  crm.add_note [sent_note]: written → nt_1a197cd0fbcad6d52
++ 2.85s  crm.add_note [sent_note]: read back and verified at the destination
++ 2.86s  chat.post [sent_notice]: written → 1793548160.962385
++ 2.86s  chat.post [sent_notice]: read back and verified at the destination
++ 2.86s  run run_1a197cd07e79288ac succeeded
 ```
 
 </details>
@@ -209,41 +209,41 @@ _When we cannot know if a call succeeded, we ask the destination before acting a
 <details><summary>Audit timeline</summary>
 
 ```
-+ 0.00s  run run_1a197a908b2b962ad started: inbound_triage
-+ 1.33s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
-+ 1.33s  run run_1a197a90de709645d started: lead_to_proposal (child of run_1a197a908b2b962ad)
-+ 1.34s  crm.upsert_contact [contact]: written → ct_1a197a90de802534c
-+ 1.34s  crm.upsert_contact [contact]: read back and verified at the destination
-+ 1.34s  crm.create_deal [deal]: written → dl_1a197a90ded2ecc27
-+ 1.34s  crm.create_deal [deal]: read back and verified at the destination
-+ 1.36s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
-+ 1.36s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
-+ 1.38s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
-+ 1.38s  calendar.create_event [survey_hold]: written → edsluob571h3cd9g75hm6pb368smce9pccp3eoj26ks62dho75hm2e9i
-+ 1.38s  calendar.create_event [survey_hold]: read back and verified at the destination
-+ 1.38s  docs.create [proposal_doc]: written → doc_1a197a90e171c68d8
-+ 1.38s  docs.create [proposal_doc]: read back and verified at the destination
-+ 1.38s  email.send classified binding_commitment — recipient outside the company: priya.shah@northgatebakery.example.com; carries a priced quote (54,900) — an offer to the customer
-+ 1.39s  approval apr_1a197a90e1bcbf982 requested for email.send (binding_commitment) from sales_lead, finance
-+ 1.39s  step send_proposal waiting on approval:apr_1a197a90e1bcbf982
-+ 1.39s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793545801.243561
-+ 1.39s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
-+ 1.39s  chat.post [approval:apr_1a197a90e1bcbf982]: written → 1793545801.247567
-+ 1.39s  chat.post [approval:apr_1a197a90e1bcbf982]: read back and verified at the destination
-+ 1.39s  run run_1a197a908b2b962ad succeeded
-+ 1.39s  approval apr_1a197a90e1bcbf982 approved by maya.patel
-+ 1.39s  step send_proposal resumed by maya.patel
-+ 1.40s  outcome unknown: email: read timeout after request was sent
-+ 1.40s  step send_proposal attempt 2 failed (email.send: email: read timeout after request was sent) — retry in 0.06s
-+ 1.47s  reconciled with destination before acting again: already there → adopted, not resent
-+ 1.47s  email.send [proposal_email]: read back and verified at the destination
-+ 1.48s  crm.update_deal_stage [stage]: written → dl_1a197a90ded2ecc27
-+ 1.48s  crm.update_deal_stage [stage]: read back and verified at the destination
-+ 1.48s  crm.add_note [sent_note]: written → nt_1a197a90e76fd8bd2
-+ 1.48s  crm.add_note [sent_note]: read back and verified at the destination
-+ 1.49s  chat.post [sent_notice]: written → 1793545801.339723
-+ 1.49s  chat.post [sent_notice]: read back and verified at the destination
-+ 1.49s  run run_1a197a90de709645d succeeded
++ 0.00s  run run_1a197cd109bf9c921 started: inbound_triage
++ 1.02s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
++ 1.02s  run run_1a197cd149222a1dc started: lead_to_proposal (child of run_1a197cd109bf9c921)
++ 1.02s  crm.upsert_contact [contact]: written → ct_1a197cd14933bfda4
++ 1.02s  crm.upsert_contact [contact]: read back and verified at the destination
++ 1.02s  crm.create_deal [deal]: written → dl_1a197cd1497d2f67b
++ 1.02s  crm.create_deal [deal]: read back and verified at the destination
++ 1.03s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
++ 1.04s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
++ 1.05s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
++ 1.05s  calendar.create_event [survey_hold]: written → edsluo9nc8r32pb16cpm6dhmc9hjaor1c4sm8cr674ojio9nc4oj8c1o
++ 1.05s  calendar.create_event [survey_hold]: read back and verified at the destination
++ 1.06s  docs.create [proposal_doc]: written → doc_1a197cd14b65e4922
++ 1.06s  docs.create [proposal_doc]: read back and verified at the destination
++ 1.06s  email.send classified binding_commitment — recipient outside the company: priya.shah@northgatebakery.example.com; carries a priced quote (GBP 54,900) — an offer to the customer
++ 1.06s  approval apr_1a197cd14bb3efc84 requested for email.send (binding_commitment) from sales_lead, finance
++ 1.06s  step send_proposal waiting on approval:apr_1a197cd14bb3efc84
++ 1.06s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793548162.236156
++ 1.06s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
++ 1.06s  chat.post [approval:apr_1a197cd14bb3efc84]: written → 1793548162.239157
++ 1.06s  chat.post [approval:apr_1a197cd14bb3efc84]: read back and verified at the destination
++ 1.06s  run run_1a197cd109bf9c921 succeeded
++ 1.06s  approval apr_1a197cd14bb3efc84 approved by maya.patel
++ 1.06s  step send_proposal resumed by maya.patel
++ 1.07s  outcome unknown: email: read timeout after request was sent
++ 1.07s  step send_proposal attempt 2 failed (email.send: email: read timeout after request was sent) — retry in 0.05s
++ 1.13s  reconciled with destination before acting again: already there → adopted, not resent
++ 1.14s  email.send [proposal_email]: read back and verified at the destination
++ 1.14s  crm.update_deal_stage [stage]: written → dl_1a197cd1497d2f67b
++ 1.14s  crm.update_deal_stage [stage]: read back and verified at the destination
++ 1.14s  crm.add_note [sent_note]: written → nt_1a197cd150e1eb5c6
++ 1.14s  crm.add_note [sent_note]: read back and verified at the destination
++ 1.15s  chat.post [sent_notice]: written → 1793548162.324799
++ 1.15s  chat.post [sent_notice]: read back and verified at the destination
++ 1.15s  run run_1a197cd149222a1dc succeeded
 ```
 
 </details>
@@ -266,39 +266,39 @@ _Transient errors back off and retry; permanent ones stop, report and block only
 <details><summary>Audit timeline</summary>
 
 ```
-+ 0.00s  run run_1a197a90fbc253573 started: inbound_triage
-+ 1.47s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
-+ 1.47s  run run_1a197a9157a880ea8 started: lead_to_proposal (child of run_1a197a90fbc253573)
-+ 1.48s  crm.upsert_contact [contact]: written → ct_1a197a9157befc3a4
-+ 1.48s  crm.upsert_contact [contact]: read back and verified at the destination
-+ 1.48s  transient failure: crm: 503 Service Unavailable — retry in 0.05s
-+ 1.48s  step crm_record attempt 1 failed (crm.create_deal: crm: 503 Service Unavailable) — retry in 0.05s
-+ 1.49s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
-+ 1.50s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
-+ 1.50s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793545803.158395
-+ 1.50s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
-+ 1.50s  run run_1a197a90fbc253573 succeeded
-+ 1.57s  transient failure: crm: 503 Service Unavailable — retry in 0.1s
-+ 1.57s  step crm_record attempt 2 failed (crm.create_deal: crm: 503 Service Unavailable) — retry in 0.1s
-+ 1.69s  crm.create_deal [deal]: written → dl_1a197a9164f41c74b
-+ 1.69s  crm.create_deal [deal]: read back and verified at the destination
-+ 1.70s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
-+ 1.71s  step schedule_survey FAILED [tool_permanent]: calendar.create_event: calendar: 403 Forbidden — token lacks the required scope — blocked: crm_stage, notify_team, send_proposal
-+ 1.71s  exception [high] tool_permanent
-+ 1.71s  docs.create [proposal_doc]: written → doc_1a197a916652bbda0
-+ 1.71s  docs.create [proposal_doc]: read back and verified at the destination
-+ 1.72s  chat.post [exception:exc_1a197a9166477b500]: written → 1793545803.369546
-+ 1.72s  chat.post [exception:exc_1a197a9166477b500]: read back and verified at the destination
-+ 1.72s  run run_1a197a9157a880ea8 failed
-+ 1.72s  operator lena.brandt retried schedule_survey
-+ 1.74s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
-+ 1.74s  calendar.create_event [survey_hold]: written → edslup9ncph36dpgc4q36pb275hj6eb368p3echic4qj0o9h61hm4d32
-+ 1.74s  calendar.create_event [survey_hold]: read back and verified at the destination
-+ 1.74s  email.send classified binding_commitment — recipient outside the company: priya.shah@northgatebakery.example.com; carries a priced quote (54,900) — an offer to the customer
-+ 1.74s  approval apr_1a197a91689251e45 requested for email.send (binding_commitment) from sales_lead, finance
-+ 1.74s  step send_proposal waiting on approval:apr_1a197a91689251e45
-+ 1.75s  chat.post [approval:apr_1a197a91689251e45]: written → 1793545803.401852
-+ 1.75s  chat.post [approval:apr_1a197a91689251e45]: read back and verified at the destination
++ 0.00s  run run_1a197cd15e0fcbb91 started: inbound_triage
++ 0.87s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
++ 0.87s  run run_1a197cd19406eaa00 started: lead_to_proposal (child of run_1a197cd15e0fcbb91)
++ 0.87s  crm.upsert_contact [contact]: written → ct_1a197cd1942941dc5
++ 0.87s  crm.upsert_contact [contact]: read back and verified at the destination
++ 0.87s  transient failure: crm: 503 Service Unavailable — retry in 0.05s
++ 0.87s  step crm_record attempt 1 failed (crm.create_deal: crm: 503 Service Unavailable) — retry in 0.05s
++ 0.88s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
++ 0.89s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
++ 0.89s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793548163.415575
++ 0.89s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
++ 0.89s  run run_1a197cd15e0fcbb91 succeeded
++ 0.95s  transient failure: crm: 503 Service Unavailable — retry in 0.1s
++ 0.95s  step crm_record attempt 2 failed (crm.create_deal: crm: 503 Service Unavailable) — retry in 0.1s
++ 1.08s  crm.create_deal [deal]: written → dl_1a197cd1a0d02e02d
++ 1.08s  crm.create_deal [deal]: read back and verified at the destination
++ 1.09s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
++ 1.09s  step schedule_survey FAILED [tool_permanent]: calendar.create_event: calendar: 403 Forbidden — token lacks the required scope — blocked: crm_stage, notify_team, send_proposal
++ 1.09s  exception [high] tool_permanent
++ 1.10s  docs.create [proposal_doc]: written → doc_1a197cd1a25595077
++ 1.10s  docs.create [proposal_doc]: read back and verified at the destination
++ 1.10s  chat.post [exception:exc_1a197cd1a24b7c48e]: written → 1793548163.624598
++ 1.10s  chat.post [exception:exc_1a197cd1a24b7c48e]: read back and verified at the destination
++ 1.10s  run run_1a197cd19406eaa00 failed
++ 1.10s  operator lena.brandt retried schedule_survey
++ 1.11s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
++ 1.11s  calendar.create_event [survey_hold]: written → edslud1n6ks36phg69gjid9g68q64dhpcgpj8e1ockpm8phjc5i6coj1
++ 1.11s  calendar.create_event [survey_hold]: read back and verified at the destination
++ 1.11s  email.send classified binding_commitment — recipient outside the company: priya.shah@northgatebakery.example.com; carries a priced quote (GBP 54,900) — an offer to the customer
++ 1.11s  approval apr_1a197cd1a376c0c70 requested for email.send (binding_commitment) from sales_lead, finance
++ 1.11s  step send_proposal waiting on approval:apr_1a197cd1a376c0c70
++ 1.12s  chat.post [approval:apr_1a197cd1a376c0c70]: written → 1793548163.640601
++ 1.12s  chat.post [approval:apr_1a197cd1a376c0c70]: read back and verified at the destination
 ```
 
 </details>
@@ -318,37 +318,37 @@ _A 200 OK is not proof: every write is read back, and a missing one stops the wo
 <details><summary>Audit timeline</summary>
 
 ```
-+ 0.00s  run run_1a197a9178cebbac4 started: inbound_triage
-+ 1.45s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
-+ 1.45s  run run_1a197a91d33ba3efc started: lead_to_proposal (child of run_1a197a9178cebbac4)
-+ 1.46s  crm.upsert_contact [contact]: written → ct_1a197a91d36f0e578
-+ 1.46s  crm.upsert_contact [contact]: read back and verified at the destination
-+ 1.46s  crm.create_deal [deal]: written → dl_1a197a91d3bcaf070
-+ 1.46s  crm.create_deal [deal]: read back and verified at the destination
-+ 1.48s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
-+ 1.48s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
-+ 1.50s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
-+ 1.50s  calendar.create_event [survey_hold]: written → edsluchk69j6ce9gc4o62o9oc9imap9icorjacb661im6d9i61j30d9j
-+ 1.50s  calendar.create_event [survey_hold]: read back and verified at the destination
-+ 1.51s  docs.create [proposal_doc]: written → doc_1a197a91d6a1e2ba4
-+ 1.66s  VERIFICATION FAILED: document doc_1a197a91d6a1e2ba4 not found at the destination
-+ 1.66s  step proposal_document FAILED [verification_failed]: docs.create: verification failed: document doc_1a197a91d6a1e2ba4 not found at the destination — blocked: crm_stage, notify_team, send_proposal
-+ 1.66s  exception [high] verification_failed
-+ 1.67s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793545805.321890
-+ 1.67s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
-+ 1.67s  chat.post [exception:exc_1a197a91e07b13edc]: written → 1793545805.325888
-+ 1.67s  chat.post [exception:exc_1a197a91e07b13edc]: read back and verified at the destination
-+ 1.67s  run run_1a197a9178cebbac4 succeeded
-+ 1.67s  run run_1a197a91d33ba3efc failed
-+ 1.67s  operator lena.brandt retried proposal_document
-+ 1.68s  reconciled with destination before acting again: not there → safe to send
-+ 1.68s  docs.create [proposal_doc]: written → doc_1a197a91e16fbdf98
-+ 1.68s  docs.create [proposal_doc]: read back and verified at the destination
-+ 1.68s  email.send classified binding_commitment — recipient outside the company: priya.shah@northgatebakery.example.com; carries a priced quote (54,900) — an offer to the customer
-+ 1.68s  approval apr_1a197a91e1c98c0ba requested for email.send (binding_commitment) from sales_lead, finance
-+ 1.68s  step send_proposal waiting on approval:apr_1a197a91e1c98c0ba
-+ 1.69s  chat.post [approval:apr_1a197a91e1c98c0ba]: written → 1793545805.341192
-+ 1.69s  chat.post [approval:apr_1a197a91e1c98c0ba]: read back and verified at the destination
++ 0.00s  run run_1a197cd1ac5947819 started: inbound_triage
++ 0.84s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
++ 0.84s  run run_1a197cd1e10ae90eb started: lead_to_proposal (child of run_1a197cd1ac5947819)
++ 0.85s  crm.upsert_contact [contact]: written → ct_1a197cd1e118e7c62
++ 0.85s  crm.upsert_contact [contact]: read back and verified at the destination
++ 0.85s  crm.create_deal [deal]: written → dl_1a197cd1e170a04f0
++ 0.85s  crm.create_deal [deal]: read back and verified at the destination
++ 0.86s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
++ 0.87s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
++ 0.87s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
++ 0.88s  calendar.create_event [survey_hold]: written → edsluphg70qjeoplcdi38or4cco30d1g6ssjgc1ockr30phi6kojicpj
++ 0.88s  calendar.create_event [survey_hold]: read back and verified at the destination
++ 0.88s  docs.create [proposal_doc]: written → doc_1a197cd1e3325de58
++ 1.03s  VERIFICATION FAILED: document doc_1a197cd1e3325de58 not found at the destination
++ 1.03s  step proposal_document FAILED [verification_failed]: docs.create: verification failed: document doc_1a197cd1e3325de58 not found at the destination — blocked: crm_stage, notify_team, send_proposal
++ 1.03s  exception [high] verification_failed
++ 1.04s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793548164.814882
++ 1.04s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
++ 1.04s  chat.post [exception:exc_1a197cd1ecd2db69e]: written → 1793548164.818880
++ 1.04s  chat.post [exception:exc_1a197cd1ecd2db69e]: read back and verified at the destination
++ 1.04s  run run_1a197cd1ac5947819 succeeded
++ 1.04s  run run_1a197cd1e10ae90eb failed
++ 1.04s  operator lena.brandt retried proposal_document
++ 1.04s  reconciled with destination before acting again: not there → safe to send
++ 1.05s  docs.create [proposal_doc]: written → doc_1a197cd1ed7900faf
++ 1.05s  docs.create [proposal_doc]: read back and verified at the destination
++ 1.05s  email.send classified binding_commitment — recipient outside the company: priya.shah@northgatebakery.example.com; carries a priced quote (GBP 54,900) — an offer to the customer
++ 1.05s  approval apr_1a197cd1edc995f7e requested for email.send (binding_commitment) from sales_lead, finance
++ 1.05s  step send_proposal waiting on approval:apr_1a197cd1edc995f7e
++ 1.05s  chat.post [approval:apr_1a197cd1edc995f7e]: written → 1793548164.828891
++ 1.05s  chat.post [approval:apr_1a197cd1edc995f7e]: read back and verified at the destination
 ```
 
 </details>
@@ -369,38 +369,38 @@ _Approval and permissions are enforced by the executor, not the prompt — even 
 <details><summary>Audit timeline</summary>
 
 ```
-+-0.00s  run run_1a197a91f41427781 started: inbound_triage
-+ 1.15s  REFUSED email.send proposed by lead_qualifier: agent 'lead_qualifier' may not propose 'email.send' (allowed: ['crm.add_note', 'chat.post'])
-+ 1.15s  REFUSED billing.issue_invoice proposed by lead_qualifier: agent 'lead_qualifier' may not propose 'billing.issue_invoice' (allowed: ['crm.add_note', 'chat.post'])
-+ 1.16s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action, propose_action, propose_action; 1 proposal(s), 2 refused
-+ 1.16s  exception [high] policy_violation
-+ 1.16s  run run_1a197a923c765d8e8 started: lead_to_proposal (child of run_1a197a91f41427781)
-+ 1.16s  chat.post classified sensitive_disclosure — channel #customer-shared is shared outside the company; contains internal-only wording ('cost price'); mentions a third-party address (tom@beckerlogistics.example.com)
-+ 1.16s  crm.upsert_contact [contact]: written → ct_1a197a923c902b88e
-+ 1.16s  crm.upsert_contact [contact]: read back and verified at the destination
-+ 1.17s  crm.create_deal [deal]: written → dl_1a197a923ccde6cd3
-+ 1.17s  crm.create_deal [deal]: read back and verified at the destination
-+ 1.18s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
-+ 1.18s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
-+ 1.19s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
-+ 1.19s  calendar.create_event [survey_hold]: written → edslup1n74pm2c1gchij0d9p6dj36c9lcgsj2dj170s34dpgcgojeopi
-+ 1.20s  calendar.create_event [survey_hold]: read back and verified at the destination
-+ 1.20s  docs.create [proposal_doc]: written → doc_1a197a923ef53bd64
-+ 1.20s  docs.create [proposal_doc]: read back and verified at the destination
-+ 1.20s  email.send classified binding_commitment — recipient outside the company: tom@beckerlogistics.example.com; carries a priced quote (231,200) — an offer to the customer
-+ 1.20s  approval apr_1a197a923f3ff40d0 requested for email.send (binding_commitment) from sales_lead, finance
-+ 1.20s  step send_proposal waiting on approval:apr_1a197a923f3ff40d0
-+ 1.21s  chat.post [exception:exc_1a197a923c69f5a84]: written → 1793545806.836007
-+ 1.21s  chat.post [exception:exc_1a197a923c69f5a84]: read back and verified at the destination
-+ 1.21s  approval apr_1a197a923f7ab2a5e requested for chat.post (sensitive_disclosure) from ops_manager
-+ 1.21s  chat.post [approval:apr_1a197a923f3ff40d0]: written → 1793545806.840513
-+ 1.21s  chat.post [approval:apr_1a197a923f3ff40d0]: read back and verified at the destination
-+ 1.21s  run run_1a197a91f41427781 succeeded
-+ 1.21s  chat.post [approval:apr_1a197a923f7ab2a5e]: written → 1793545806.844524
-+ 1.21s  chat.post [approval:apr_1a197a923f7ab2a5e]: read back and verified at the destination
-+ 1.21s  approval apr_1a197a923f7ab2a5e rejected by lena.brandt
-+ 1.22s  int_1a197a923c849b95c not executed: rejected by lena.brandt
-+ 1.22s  exception [low] approval_rejected
++ 0.00s  run run_1a197cd1f7f059ee1 started: inbound_triage
++ 0.84s  REFUSED email.send proposed by lead_qualifier: agent 'lead_qualifier' may not propose 'email.send' (allowed: ['crm.add_note', 'chat.post'])
++ 0.84s  REFUSED billing.issue_invoice proposed by lead_qualifier: agent 'lead_qualifier' may not propose 'billing.issue_invoice' (allowed: ['crm.add_note', 'chat.post'])
++ 0.85s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action, propose_action, propose_action; 1 proposal(s), 2 refused
++ 0.85s  exception [high] policy_violation
++ 0.85s  run run_1a197cd22ce76982a started: lead_to_proposal (child of run_1a197cd1f7f059ee1)
++ 0.85s  chat.post classified sensitive_disclosure — channel #customer-shared is shared outside the company; contains internal-only wording ('cost price'); mentions a third-party address (tom@beckerlogistics.example.com)
++ 0.85s  crm.upsert_contact [contact]: written → ct_1a197cd22cf72b74f
++ 0.85s  crm.upsert_contact [contact]: read back and verified at the destination
++ 0.85s  crm.create_deal [deal]: written → dl_1a197cd22d3897aa1
++ 0.85s  crm.create_deal [deal]: read back and verified at the destination
++ 0.86s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
++ 0.87s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
++ 0.88s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
++ 0.88s  calendar.create_event [survey_hold]: written → edsludb4ckq66or261h34pb2cdgmcohlc8qm4or2cdi66dj56hijecpp
++ 0.88s  calendar.create_event [survey_hold]: read back and verified at the destination
++ 0.88s  docs.create [proposal_doc]: written → doc_1a197cd22efdf0a29
++ 0.88s  docs.create [proposal_doc]: read back and verified at the destination
++ 0.88s  email.send classified binding_commitment — recipient outside the company: tom@beckerlogistics.example.com; carries a priced quote (GBP 231,200) — an offer to the customer
++ 0.88s  approval apr_1a197cd22f317d895 requested for email.send (binding_commitment) from sales_lead, finance
++ 0.88s  step send_proposal waiting on approval:apr_1a197cd22f317d895
++ 0.89s  chat.post [exception:exc_1a197cd22cd8409fd]: written → 1793548165.875392
++ 0.89s  chat.post [exception:exc_1a197cd22cd8409fd]: read back and verified at the destination
++ 0.89s  approval apr_1a197cd22f7a03294 requested for chat.post (sensitive_disclosure) from ops_manager
++ 0.89s  chat.post [approval:apr_1a197cd22f317d895]: written → 1793548165.879898
++ 0.89s  chat.post [approval:apr_1a197cd22f317d895]: read back and verified at the destination
++ 0.89s  run run_1a197cd1f7f059ee1 succeeded
++ 0.89s  chat.post [approval:apr_1a197cd22f7a03294]: written → 1793548165.882898
++ 0.89s  chat.post [approval:apr_1a197cd22f7a03294]: read back and verified at the destination
++ 0.90s  approval apr_1a197cd22f7a03294 rejected by lena.brandt
++ 0.90s  int_1a197cd22cee29137 not executed: rejected by lena.brandt
++ 0.90s  exception [low] approval_rejected
 ```
 
 </details>
@@ -410,7 +410,7 @@ _Approval and permissions are enforced by the executor, not the prompt — even 
 
 _Numbers are checked in code against the estimator; a wrong draft goes back with findings._
 
-- ✅ The deterministic checks rejected the first draft — `payback_years cited as 6.8; the estimate says 5.5; the proposal does not state payback years (5.5 years); states '6.8 years', which no estimate figure supports`
+- ✅ The deterministic checks rejected the first draft — `payback_years cited as 6.8; the estimate says 5.5; the proposal does not state the payback (5.5 years); states '6.8 years', which no estimate figure supports`
 - ✅ The writer was sent back once with the findings and redrafted
 - ✅ The LLM reviewer was only consulted once the numbers passed (no tokens spent on a known-bad draft)
 - ✅ The filed document states the estimator's payback (5.5 years)
@@ -418,30 +418,30 @@ _Numbers are checked in code against the estimator; a wrong draft goes back with
 <details><summary>Audit timeline</summary>
 
 ```
-+-0.00s  run run_1a197a924a872a0af started: inbound_triage
-+ 1.24s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
-+ 1.24s  run run_1a197a9297b1b675b started: lead_to_proposal (child of run_1a197a924a872a0af)
-+ 1.24s  crm.upsert_contact [contact]: written → ct_1a197a9297ddd0770
-+ 1.24s  crm.upsert_contact [contact]: read back and verified at the destination
-+ 1.24s  crm.create_deal [deal]: written → dl_1a197a9298228a1f1
-+ 1.24s  crm.create_deal [deal]: read back and verified at the destination
-+ 1.26s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
-+ 1.26s  step draft_proposal sent back by review (revision 1): payback_years cited as 6.8; the estimate says 5.5; the proposal does not state payback years (5.5 years); states '6.8 years', which no estim
-+ 1.27s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
-+ 1.28s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
-+ 1.29s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
-+ 1.30s  calendar.create_event [survey_hold]: written → edslup1g6sp3ap1oclhjce1pcdhjip1o6gq34ob165j68dho60q36ohk
-+ 1.30s  calendar.create_event [survey_hold]: read back and verified at the destination
-+ 1.31s  docs.create [proposal_doc]: written → doc_1a197a929bf557a51
-+ 1.31s  docs.create [proposal_doc]: read back and verified at the destination
-+ 1.31s  email.send classified binding_commitment — recipient outside the company: priya.shah@northgatebakery.example.com; carries a priced quote (54,900) — an offer to the customer
-+ 1.31s  approval apr_1a197a929c49b54b3 requested for email.send (binding_commitment) from sales_lead, finance
-+ 1.31s  step send_proposal waiting on approval:apr_1a197a929c49b54b3
-+ 1.31s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793545808.325908
-+ 1.31s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
-+ 1.32s  chat.post [approval:apr_1a197a929c49b54b3]: written → 1793545808.329916
-+ 1.32s  chat.post [approval:apr_1a197a929c49b54b3]: read back and verified at the destination
-+ 1.32s  run run_1a197a924a872a0af succeeded
++ 0.00s  run run_1a197cd2395ce4d4a started: inbound_triage
++ 0.84s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
++ 0.84s  run run_1a197cd26db1d39d6 started: lead_to_proposal (child of run_1a197cd2395ce4d4a)
++ 0.84s  crm.upsert_contact [contact]: written → ct_1a197cd26dcda64a7
++ 0.84s  crm.upsert_contact [contact]: read back and verified at the destination
++ 0.85s  crm.create_deal [deal]: written → dl_1a197cd26e07c5026
++ 0.85s  crm.create_deal [deal]: read back and verified at the destination
++ 0.85s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
++ 0.85s  step draft_proposal sent back by review (revision 1): payback_years cited as 6.8; the estimate says 5.5; the proposal does not state the payback (5.5 years); states '6.8 years', which no estimat
++ 0.86s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
++ 0.87s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
++ 0.87s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
++ 0.88s  calendar.create_event [survey_hold]: written → edsluob3ccsj2e9o71j3cp36ccqjec9lcgqj2dplcco64chn6gpjge1l
++ 0.88s  calendar.create_event [survey_hold]: read back and verified at the destination
++ 0.88s  docs.create [proposal_doc]: written → doc_1a197cd270296bb81
++ 0.88s  docs.create [proposal_doc]: read back and verified at the destination
++ 0.88s  email.send classified binding_commitment — recipient outside the company: priya.shah@northgatebakery.example.com; carries a priced quote (GBP 54,900) — an offer to the customer
++ 0.88s  approval apr_1a197cd270609fdca requested for email.send (binding_commitment) from sales_lead, finance
++ 0.88s  step send_proposal waiting on approval:apr_1a197cd270609fdca
++ 0.89s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793548166.919883
++ 0.89s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
++ 0.89s  chat.post [approval:apr_1a197cd270609fdca]: written → 1793548166.922884
++ 0.89s  chat.post [approval:apr_1a197cd270609fdca]: read back and verified at the destination
++ 0.89s  run run_1a197cd2395ce4d4a succeeded
 ```
 
 </details>
@@ -460,52 +460,52 @@ _Approvals are bound to the exact content and signed; edits and forged rows do n
 <details><summary>Audit timeline</summary>
 
 ```
-+ 0.00s  run run_1a197a92ae1db7494 started: inbound_triage
-+ 1.25s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
-+ 1.25s  run run_1a197a92fc3ffe9e8 started: lead_to_proposal (child of run_1a197a92ae1db7494)
-+ 1.26s  crm.upsert_contact [contact]: written → ct_1a197a92fc531d33c
-+ 1.26s  crm.upsert_contact [contact]: read back and verified at the destination
-+ 1.26s  crm.create_deal [deal]: written → dl_1a197a92fca85a760
-+ 1.26s  crm.create_deal [deal]: read back and verified at the destination
-+ 1.27s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
-+ 1.28s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
-+ 1.29s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
-+ 1.29s  calendar.create_event [survey_hold]: written → edslucr1cgqmcd9pchi3cchmcoom4p316hgmccj66cr3gdpjccqm6o9j
-+ 1.29s  calendar.create_event [survey_hold]: read back and verified at the destination
-+ 1.30s  docs.create [proposal_doc]: written → doc_1a197a92ff0765cf2
-+ 1.30s  docs.create [proposal_doc]: read back and verified at the destination
-+ 1.30s  email.send classified binding_commitment — recipient outside the company: priya.shah@northgatebakery.example.com; carries a priced quote (54,900) — an offer to the customer
-+ 1.30s  approval apr_1a197a92ff55d2bfd requested for email.send (binding_commitment) from sales_lead, finance
-+ 1.30s  step send_proposal waiting on approval:apr_1a197a92ff55d2bfd
-+ 1.31s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793545809.910579
-+ 1.31s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
-+ 1.31s  chat.post [approval:apr_1a197a92ff55d2bfd]: written → 1793545809.916088
-+ 1.31s  chat.post [approval:apr_1a197a92ff55d2bfd]: read back and verified at the destination
-+ 1.31s  run run_1a197a92ae1db7494 succeeded
-+ 1.31s  approval apr_1a197a92ff55d2bfd approved by maya.patel
-+ 1.31s  step send_proposal resumed by maya.patel
-+ 1.31s  email.send [proposal_email]: content changed (399f108b → 2dddb668)
-+ 1.31s  approval apr_1a197a92ff55d2bfd not usable (invalid): payload changed after approval was requested
-+ 1.31s  approval apr_1a197a9300080ac97 requested for email.send (binding_commitment) from sales_lead, finance
-+ 1.31s  step send_proposal waiting on approval:apr_1a197a9300080ac97
-+ 1.32s  chat.post [approval:apr_1a197a9300080ac97]: written → 1793545809.922143
-+ 1.32s  chat.post [approval:apr_1a197a9300080ac97]: read back and verified at the destination
-+ 1.32s  approval apr_1a197a9300080ac97 not usable (invalid): decision signature does not verify
-+ 1.32s  approval apr_1a197a930064db4a5 requested for email.send (binding_commitment) from sales_lead, finance
-+ 1.32s  step send_proposal waiting on approval:apr_1a197a930064db4a5
-+ 1.32s  chat.post [approval:apr_1a197a930064db4a5]: written → 1793545809.927150
-+ 1.32s  chat.post [approval:apr_1a197a930064db4a5]: read back and verified at the destination
-+ 1.32s  approval apr_1a197a930064db4a5 approved by maya.patel
-+ 1.32s  step send_proposal resumed by maya.patel
-+ 1.33s  email.send [proposal_email]: written → em_1a197a9300c23416c
-+ 1.33s  email.send [proposal_email]: read back and verified at the destination
-+ 1.33s  crm.update_deal_stage [stage]: written → dl_1a197a92fca85a760
-+ 1.33s  crm.update_deal_stage [stage]: read back and verified at the destination
-+ 1.34s  crm.add_note [sent_note]: written → nt_1a197a93015bae8ac
-+ 1.34s  crm.add_note [sent_note]: read back and verified at the destination
-+ 1.34s  chat.post [sent_notice]: written → 1793545809.947673
-+ 1.34s  chat.post [sent_notice]: read back and verified at the destination
-+ 1.34s  run run_1a197a92fc3ffe9e8 succeeded
++ 0.00s  run run_1a197cd2791138f86 started: inbound_triage
++ 0.83s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
++ 0.83s  run run_1a197cd2acd8baa62 started: lead_to_proposal (child of run_1a197cd2791138f86)
++ 0.83s  crm.upsert_contact [contact]: written → ct_1a197cd2ace5a4e16
++ 0.83s  crm.upsert_contact [contact]: read back and verified at the destination
++ 0.84s  crm.create_deal [deal]: written → dl_1a197cd2ad20f7f54
++ 0.84s  crm.create_deal [deal]: read back and verified at the destination
++ 0.85s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
++ 0.85s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
++ 0.86s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
++ 0.86s  calendar.create_event [survey_hold]: written → edsludr66cp3gohk64q3cp9l6comadr4ccpmae1l6csjidpk6lgj2d1l
++ 0.86s  calendar.create_event [survey_hold]: read back and verified at the destination
++ 0.87s  docs.create [proposal_doc]: written → doc_1a197cd2af2c90378
++ 0.87s  docs.create [proposal_doc]: read back and verified at the destination
++ 0.87s  email.send classified binding_commitment — recipient outside the company: priya.shah@northgatebakery.example.com; carries a priced quote (GBP 54,900) — an offer to the customer
++ 0.87s  approval apr_1a197cd2af6bdab0a requested for email.send (binding_commitment) from sales_lead, finance
++ 0.87s  step send_proposal waiting on approval:apr_1a197cd2af6bdab0a
++ 0.87s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793548167.927101
++ 0.87s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
++ 0.88s  chat.post [approval:apr_1a197cd2af6bdab0a]: written → 1793548167.930101
++ 0.88s  chat.post [approval:apr_1a197cd2af6bdab0a]: read back and verified at the destination
++ 0.88s  run run_1a197cd2791138f86 succeeded
++ 0.88s  approval apr_1a197cd2af6bdab0a approved by maya.patel
++ 0.88s  step send_proposal resumed by maya.patel
++ 0.88s  email.send [proposal_email]: content changed (bb37fe7b → c365b6bc)
++ 0.88s  approval apr_1a197cd2af6bdab0a not usable (invalid): payload changed after approval was requested
++ 0.88s  approval apr_1a197cd2b01ee4746 requested for email.send (binding_commitment) from sales_lead, finance
++ 0.88s  step send_proposal waiting on approval:apr_1a197cd2b01ee4746
++ 0.88s  chat.post [approval:apr_1a197cd2b01ee4746]: written → 1793548167.938104
++ 0.88s  chat.post [approval:apr_1a197cd2b01ee4746]: read back and verified at the destination
++ 0.88s  approval apr_1a197cd2b01ee4746 not usable (invalid): decision signature does not verify
++ 0.88s  approval apr_1a197cd2b066a2fdc requested for email.send (binding_commitment) from sales_lead, finance
++ 0.89s  step send_proposal waiting on approval:apr_1a197cd2b066a2fdc
++ 0.89s  chat.post [approval:apr_1a197cd2b066a2fdc]: written → 1793548167.943105
++ 0.89s  chat.post [approval:apr_1a197cd2b066a2fdc]: read back and verified at the destination
++ 0.89s  approval apr_1a197cd2b066a2fdc approved by maya.patel
++ 0.89s  step send_proposal resumed by maya.patel
++ 0.89s  email.send [proposal_email]: written → em_1a197cd2b0d331ee6
++ 0.90s  email.send [proposal_email]: read back and verified at the destination
++ 0.90s  crm.update_deal_stage [stage]: written → dl_1a197cd2ad20f7f54
++ 0.90s  crm.update_deal_stage [stage]: read back and verified at the destination
++ 0.90s  crm.add_note [sent_note]: written → nt_1a197cd2b16d2c517
++ 0.90s  crm.add_note [sent_note]: read back and verified at the destination
++ 0.91s  chat.post [sent_notice]: written → 1793548167.962680
++ 0.91s  chat.post [sent_notice]: read back and verified at the destination
++ 0.91s  run run_1a197cd2acd8baa62 succeeded
 ```
 
 </details>
@@ -515,33 +515,33 @@ _Approvals are bound to the exact content and signed; edits and forged rows do n
 
 _A per-run model budget stops a runaway run and reports it._
 
-- ✅ The run hit its per-run model budget and stopped calling models — `lead_to_proposal/review: per-run budget reached: $0.0048 spent of $0.0040`
-- ✅ Spend stayed within one call of the cap — `$0.0048 vs cap $0.004`
+- ✅ The run hit its per-run model budget and stopped calling models — `lead_to_proposal/review: per-run budget reached: $0.0049 spent of $0.0040`
+- ✅ Spend stayed within one call of the cap — `$0.0049 vs cap $0.004`
 - ✅ No email was prepared or sent
 
 <details><summary>Audit timeline</summary>
 
 ```
-+ 0.00s  run run_1a197a9315531ccf7 started: inbound_triage
-+ 1.37s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
-+ 1.37s  run run_1a197a936a98ac5a3 started: lead_to_proposal (child of run_1a197a9315531ccf7)
-+ 1.37s  crm.upsert_contact [contact]: written → ct_1a197a936aca3744c
-+ 1.37s  crm.upsert_contact [contact]: read back and verified at the destination
-+ 1.38s  crm.create_deal [deal]: written → dl_1a197a936b34ea41e
-+ 1.38s  crm.create_deal [deal]: read back and verified at the destination
-+ 1.41s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
-+ 1.41s  step review FAILED [budget_exceeded]: per-run budget reached: $0.0048 spent of $0.0040 — blocked: crm_stage, notify_team, proposal_document, send_proposal
-+ 1.41s  exception [high] budget_exceeded
-+ 1.41s  step schedule_survey FAILED [budget_exceeded]: per-run budget reached: $0.0048 spent of $0.0040 — blocked: crm_stage, notify_team, send_proposal
-+ 1.41s  exception [high] budget_exceeded
-+ 1.42s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793545811.673953
-+ 1.42s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
-+ 1.42s  chat.post [exception:exc_1a197a936d741a07b]: written → 1793545811.678460
-+ 1.42s  chat.post [exception:exc_1a197a936d741a07b]: read back and verified at the destination
-+ 1.43s  chat.post [exception:exc_1a197a936d85532eb]: written → 1793545811.684460
-+ 1.43s  chat.post [exception:exc_1a197a936d85532eb]: read back and verified at the destination
-+ 1.43s  run run_1a197a9315531ccf7 succeeded
-+ 1.43s  run run_1a197a936a98ac5a3 failed
++ 0.00s  run run_1a197cd2bd4c2ae4c started: inbound_triage
++ 0.93s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
++ 0.93s  run run_1a197cd2f7491492d started: lead_to_proposal (child of run_1a197cd2bd4c2ae4c)
++ 0.93s  crm.upsert_contact [contact]: written → ct_1a197cd2f76faaf96
++ 0.93s  crm.upsert_contact [contact]: read back and verified at the destination
++ 0.94s  crm.create_deal [deal]: written → dl_1a197cd2f79dadc42
++ 0.94s  crm.create_deal [deal]: read back and verified at the destination
++ 0.94s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
++ 0.95s  step review FAILED [budget_exceeded]: per-run budget reached: $0.0049 spent of $0.0040 — blocked: crm_stage, notify_team, proposal_document, send_proposal
++ 0.95s  exception [high] budget_exceeded
++ 0.95s  step schedule_survey FAILED [budget_exceeded]: per-run budget reached: $0.0049 spent of $0.0040 — blocked: crm_stage, notify_team, send_proposal
++ 0.95s  exception [high] budget_exceeded
++ 0.95s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: written → 1793548169.095340
++ 0.95s  chat.post [agent:lead_qualifier:chat.post:9ec2fa818880]: read back and verified at the destination
++ 0.95s  chat.post [exception:exc_1a197cd2f8640dd6d]: written → 1793548169.099661
++ 0.95s  chat.post [exception:exc_1a197cd2f8640dd6d]: read back and verified at the destination
++ 0.96s  chat.post [exception:exc_1a197cd2f8607aba9]: written → 1793548169.103381
++ 0.96s  chat.post [exception:exc_1a197cd2f8607aba9]: read back and verified at the destination
++ 0.96s  run run_1a197cd2bd4c2ae4c succeeded
++ 0.96s  run run_1a197cd2f7491492d failed
 ```
 
 </details>
@@ -559,35 +559,35 @@ _Choices with material consequences pause for a person instead of being guessed.
 <details><summary>Audit timeline</summary>
 
 ```
-+-0.00s  run run_1a197a9381ee48975 started: inbound_triage
-+ 1.35s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
-+ 1.35s  run run_1a197a93d6913892a started: lead_to_proposal (child of run_1a197a9381ee48975)
-+ 1.36s  decision needed: Jo Rivera already has an open deal “Harbour Cold Storage — rooftop PV” (stage qualified, owner maya.patel). Attach this enquiry to it, or op
-+ 1.36s  exception [high] needs_decision
-+ 1.36s  step check_existing waiting on decision:dec_1a197a93d6a9ff856
-+ 1.37s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
-+ 1.37s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
-+ 1.38s  chat.post [agent:lead_qualifier:chat.post:e71add81349b]: written → 1793545813.372378
-+ 1.38s  chat.post [agent:lead_qualifier:chat.post:e71add81349b]: read back and verified at the destination
-+ 1.38s  chat.post [exception:exc_1a197a93d6a2e7e18]: written → 1793545813.377377
-+ 1.38s  chat.post [exception:exc_1a197a93d6a2e7e18]: read back and verified at the destination
-+ 1.38s  run run_1a197a9381ee48975 succeeded
-+ 1.38s  decision made by maya.patel: attach_to_existing
-+ 1.38s  step check_existing resumed by maya.patel
-+ 1.39s  crm.upsert_contact [contact]: written → ct_seed_rivera
-+ 1.39s  crm.upsert_contact [contact]: read back and verified at the destination
-+ 1.39s  crm.add_note [attach_note]: written → nt_1a197a93d8d200908
-+ 1.40s  crm.add_note [attach_note]: read back and verified at the destination
-+ 1.41s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
-+ 1.41s  calendar.create_event [survey_hold]: written → edslue9g69gj2phnc4pjecr6cdh3icr46dijicj374s6ce1m6ph38pj4
-+ 1.41s  calendar.create_event [survey_hold]: read back and verified at the destination
-+ 1.42s  docs.create [proposal_doc]: written → doc_1a197a93da5dd3a9f
-+ 1.42s  docs.create [proposal_doc]: read back and verified at the destination
-+ 1.42s  email.send classified binding_commitment — recipient outside the company: j.rivera@harbourcold.example.com; carries a priced quote (148,600) — an offer to the customer
-+ 1.42s  approval apr_1a197a93daa3cd245 requested for email.send (binding_commitment) from sales_lead, finance
-+ 1.42s  step send_proposal waiting on approval:apr_1a197a93daa3cd245
-+ 1.42s  chat.post [approval:apr_1a197a93daa3cd245]: written → 1793545813.419418
-+ 1.42s  chat.post [approval:apr_1a197a93daa3cd245]: read back and verified at the destination
++-0.00s  run run_1a197cd30342ac097 started: inbound_triage
++ 1.08s  Lead Qualifier via handoff from Triage finished [route] using crm_search_contacts, crm_list_deals, propose_action; 1 proposal(s), 0 refused
++ 1.08s  run run_1a197cd346c07ada8 started: lead_to_proposal (child of run_1a197cd30342ac097)
++ 1.08s  decision needed: Jo Rivera already has an open deal “Harbour Cold Storage — rooftop PV” (stage qualified, owner maya.patel). Attach this enquiry to it, or op
++ 1.08s  exception [high] needs_decision
++ 1.08s  step check_existing waiting on decision:dec_1a197cd346d089025
++ 1.09s  Proposal Writer finished [draft_proposal] using get_estimate, docs_get_template; 0 proposal(s), 0 refused
++ 1.10s  Independent Reviewer finished [review] using get_estimate; 0 proposal(s), 0 refused
++ 1.12s  chat.post [agent:lead_qualifier:chat.post:e71add81349b]: written → 1793548170.369887
++ 1.12s  chat.post [agent:lead_qualifier:chat.post:e71add81349b]: read back and verified at the destination
++ 1.14s  chat.post [exception:exc_1a197cd346d5b38eb]: written → 1793548170.383413
++ 1.14s  chat.post [exception:exc_1a197cd346d5b38eb]: read back and verified at the destination
++ 1.14s  run run_1a197cd30342ac097 succeeded
++ 1.14s  decision made by maya.patel: attach_to_existing
++ 1.14s  step check_existing resumed by maya.patel
++ 1.17s  crm.upsert_contact [contact]: written → ct_seed_rivera
++ 1.17s  crm.upsert_contact [contact]: read back and verified at the destination
++ 1.18s  crm.add_note [attach_note]: written → nt_1a197cd34c655a476
++ 1.18s  crm.add_note [attach_note]: read back and verified at the destination
++ 1.19s  Survey Scheduler finished [schedule_survey] using calendar_free_slots; 0 proposal(s), 0 refused
++ 1.21s  calendar.create_event [survey_hold]: written → edslue9pcks3gopm71h3acphcdj66o9n60pm8p1kccpj0phl65hj4c1g
++ 1.21s  calendar.create_event [survey_hold]: read back and verified at the destination
++ 1.21s  docs.create [proposal_doc]: written → doc_1a197cd34ec4aed00
++ 1.21s  docs.create [proposal_doc]: read back and verified at the destination
++ 1.21s  email.send classified binding_commitment — recipient outside the company: j.rivera@harbourcold.example.com; carries a priced quote (GBP 148,600) — an offer to the customer
++ 1.21s  approval apr_1a197cd34f27d4af7 requested for email.send (binding_commitment) from sales_lead, finance
++ 1.22s  step send_proposal waiting on approval:apr_1a197cd34f27d4af7
++ 1.22s  chat.post [approval:apr_1a197cd34f27d4af7]: written → 1793548170.484240
++ 1.22s  chat.post [approval:apr_1a197cd34f27d4af7]: read back and verified at the destination
 ```
 
 </details>
@@ -605,21 +605,21 @@ _A second workflow reuses the same engine: alert now, reply after approval._
 <details><summary>Audit timeline</summary>
 
 ```
-+ 0.00s  run run_1a197a93efdeb58f7 started: inbound_triage
-+ 1.28s  Service Desk via handoff from Triage finished [route] using crm_search_contacts; 0 proposal(s), 0 refused
-+ 1.28s  run run_1a197a943f99d818f started: service_request (child of run_1a197a93efdeb58f7)
-+ 1.28s  crm.upsert_contact [contact]: written → ct_seed_rivera
-+ 1.28s  crm.upsert_contact [contact]: read back and verified at the destination
-+ 1.29s  crm.add_note [case_note]: written → nt_1a197a943ff02dae0
-+ 1.29s  crm.add_note [case_note]: read back and verified at the destination
-+ 1.29s  chat.post [alert]: written → 1793545815.043566
-+ 1.29s  chat.post [alert]: read back and verified at the destination
-+ 1.29s  email.send classified external_communication — recipient outside the company: j.rivera@harbourcold.example.com
-+ 1.29s  approval apr_1a197a9440720eed2 requested for email.send (external_communication) from sales_lead, ops_manager
-+ 1.29s  step acknowledge waiting on approval:apr_1a197a9440720eed2
-+ 1.29s  chat.post [approval:apr_1a197a9440720eed2]: written → 1793545815.047614
-+ 1.29s  chat.post [approval:apr_1a197a9440720eed2]: read back and verified at the destination
-+ 1.29s  run run_1a197a93efdeb58f7 succeeded
++ 0.00s  run run_1a197cd35f45c7c7a started: inbound_triage
++ 0.85s  Service Desk via handoff from Triage finished [route] using crm_search_contacts; 0 proposal(s), 0 refused
++ 0.85s  run run_1a197cd3946d6ed5c started: service_request (child of run_1a197cd35f45c7c7a)
++ 0.85s  crm.upsert_contact [contact]: written → ct_seed_rivera
++ 0.85s  crm.upsert_contact [contact]: read back and verified at the destination
++ 0.86s  crm.add_note [case_note]: written → nt_1a197cd394a12bd8c
++ 0.86s  crm.add_note [case_note]: read back and verified at the destination
++ 0.86s  chat.post [alert]: written → 1793548171.598488
++ 0.86s  chat.post [alert]: read back and verified at the destination
++ 0.86s  email.send classified external_communication — recipient outside the company: j.rivera@harbourcold.example.com
++ 0.86s  approval apr_1a197cd3951aa6db8 requested for email.send (external_communication) from sales_lead, ops_manager
++ 0.86s  step acknowledge waiting on approval:apr_1a197cd3951aa6db8
++ 0.87s  chat.post [approval:apr_1a197cd3951aa6db8]: written → 1793548171.602993
++ 0.87s  chat.post [approval:apr_1a197cd3951aa6db8]: read back and verified at the destination
++ 0.87s  run run_1a197cd35f45c7c7a succeeded
 ```
 
 </details>
@@ -639,26 +639,26 @@ _Not every step needs a model; binding commitments still go to finance._
 <details><summary>Audit timeline</summary>
 
 ```
-+-0.00s  run run_1a197a94518d90a0d started: survey_to_install
-+ 0.00s  duplicate business event suppressed → existing run run_1a197a94518d90a0d
-+ 0.01s  crm.update_deal_stage [stage]: written → dl_seed_rivera
-+ 0.01s  crm.update_deal_stage [stage]: read back and verified at the destination
-+ 0.01s  crm.add_note [survey_note]: written → nt_1a197a9451f9fb063
++ 0.00s  run run_1a197cd39deb36e3d started: survey_to_install
++ 0.00s  duplicate business event suppressed → existing run run_1a197cd39deb36e3d
++ 0.00s  crm.update_deal_stage [stage]: written → dl_seed_rivera
++ 0.00s  crm.update_deal_stage [stage]: read back and verified at the destination
++ 0.01s  crm.add_note [survey_note]: written → nt_1a197cd39e229b2b7
 + 0.01s  crm.add_note [survey_note]: read back and verified at the destination
-+ 0.01s  docs.create [handover]: written → doc_1a197a94523ea1fb0
++ 0.01s  docs.create [handover]: written → doc_1a197cd39e7a58775
 + 0.01s  docs.create [handover]: read back and verified at the destination
-+ 0.02s  billing.issue_invoice classified binding_commitment — billing.issue_invoice is registered as binding_commitment
-+ 0.02s  approval apr_1a197a94527f75df8 requested for billing.issue_invoice (binding_commitment) from sales_lead, finance
-+ 0.02s  step deposit_invoice waiting on approval:apr_1a197a94527f75df8
-+ 0.02s  chat.post [approval:apr_1a197a94527f75df8]: written → 1793545815.336234
-+ 0.02s  chat.post [approval:apr_1a197a94527f75df8]: read back and verified at the destination
-+ 0.02s  approval apr_1a197a94527f75df8 approved by omar.haddad
++ 0.01s  billing.issue_invoice classified binding_commitment — billing.issue_invoice is registered as binding_commitment
++ 0.01s  approval apr_1a197cd39ebf36fef requested for billing.issue_invoice (binding_commitment) from sales_lead, finance
++ 0.01s  step deposit_invoice waiting on approval:apr_1a197cd39ebf36fef
++ 0.02s  chat.post [approval:apr_1a197cd39ebf36fef]: written → 1793548171.755405
++ 0.02s  chat.post [approval:apr_1a197cd39ebf36fef]: read back and verified at the destination
++ 0.02s  approval apr_1a197cd39ebf36fef approved by omar.haddad
 + 0.02s  step deposit_invoice resumed by omar.haddad
-+ 0.03s  billing.issue_invoice [deposit]: written → inv_1a197a9452d1ae04f
-+ 0.03s  billing.issue_invoice [deposit]: read back and verified at the destination
-+ 0.03s  chat.post [ops_notice]: written → 1793545815.347739
-+ 0.03s  chat.post [ops_notice]: read back and verified at the destination
-+ 0.03s  run run_1a197a94518d90a0d succeeded
++ 0.02s  billing.issue_invoice [deposit]: written → inv_1a197cd39efeca147
++ 0.02s  billing.issue_invoice [deposit]: read back and verified at the destination
++ 0.02s  chat.post [ops_notice]: written → 1793548171.763535
++ 0.02s  chat.post [ops_notice]: read back and verified at the destination
++ 0.02s  run run_1a197cd39deb36e3d succeeded
 ```
 
 </details>
