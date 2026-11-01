@@ -1,0 +1,31 @@
+# USD per 1M tokens. Used by the cost meter and budget caps.
+#
+# These rows were taken from public price trackers in November 2026 and MUST be
+# checked against https://developers.openai.com/api/docs/pricing before go-live.
+# Change a number here and every cost report uses it from the next run.
+
+[models."gpt-5.5"]
+input = 5.00
+cached_input = 0.50
+output = 30.00
+
+[models."gpt-5.4-mini"]
+input = 0.75
+cached_input = 0.075
+output = 4.50
+
+[models."gpt-5.4-nano"]
+input = 0.20
+cached_input = 0.02
+output = 1.25
+
+[budgets]
+# A run that would spend past this stops and raises a `budget_exceeded` exception.
+per_run_usd = 0.50
+# All runs together, per UTC day.
+per_day_usd = 25.00
+
+[routing]
+# Which model each specialist uses in live mode.
+default = "gpt-5.4-mini"
+reviewer = "gpt-5.5"

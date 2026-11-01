@@ -1,0 +1,120 @@
+# Switchyard action policy.
+#
+# This file — not any prompt — decides what may run without a person.
+# Every side effect an agent or workflow wants is an "action" registered here.
+# Unregistered actions are refused. The executor checks this policy at the
+# moment of execution, so a prompt injection cannot change the outcome.
+
+[company]
+name = "Demo Energy Co"
+internal_domains = ["demo-energy.test"]
+# Slack/Teams channels shared with people outside the company.
+external_channels = ["#customer-shared"]
+# A quote sent to a customer is an offer. Any quote at or above this total
+# (in the quote's currency) is classed as a binding commitment.
+binding_quote_threshold = 0
+
+# Risk classes, from least to most restrictive. When several apply, the most
+# restrictive one wins and its approver roles are required.
+[classes.internal_routine]
+rank = 0
+requires_approval = false
+
+[classes.external_communication]
+rank = 1
+requires_approval = true
+approver_roles = ["sales_lead", "ops_manager"]
+expires_hours = 72
+
+[classes.binding_commitment]
+rank = 2
+requires_approval = true
+approver_roles = ["sales_lead", "finance"]
+expires_hours = 48
+
+[classes.sensitive_disclosure]
+rank = 3
+requires_approval = true
+approver_roles = ["ops_manager"]
+expires_hours = 24
+
+# ---- Registered actions -------------------------------------------------
+[actions."crm.upsert_contact"]
+app = "crm"
+class = "internal_routine"
+description = "Create or update a CRM contact keyed by email."
+
+[actions."crm.create_deal"]
+app = "crm"
+class = "internal_routine"
+description = "Open a deal for a contact."
+
+[actions."crm.update_deal_stage"]
+app = "crm"
+class = "internal_routine"
+description = "Move a deal to another pipeline stage."
+
+[actions."crm.add_note"]
+app = "crm"
+class = "internal_routine"
+description = "Attach an internal note to a contact or deal."
+
+[actions."docs.create"]
+app = "docs"
+class = "internal_routine"
+description = "Create a document in the shared drive (external sharing raises the class)."
+
+[actions."calendar.create_event"]
+app = "calendar"
+class = "internal_routine"
+description = "Place an event on a team calendar (external attendees raise the class)."
+
+[actions."chat.post"]
+app = "chat"
+class = "internal_routine"
+description = "Post to a team channel (shared channels raise the class)."
+
+[actions."email.send"]
+app = "email"
+class = "external_communication"
+description = "Send an email (internal-only recipients lower the class)."
+
+[actions."billing.issue_invoice"]
+app = "billing"
+class = "binding_commitment"
+description = "Issue an invoice to a customer."
+
+# ---- What each agent may propose -----------------------------------------
+# Agents never hold credentials. They can only *propose* actions from this
+# list; proposals are then classified and executed (or held) by the engine.
+[agents.triage]
+may_propose = []
+
+[agents.lead_qualifier]
+may_propose = ["crm.add_note", "chat.post"]
+
+[agents.service_desk]
+may_propose = ["crm.add_note", "chat.post"]
+
+[agents.proposal_writer]
+may_propose = ["crm.add_note"]
+
+[agents.survey_scheduler]
+may_propose = []
+
+[agents.reviewer]
+may_propose = []
+
+# ---- People who can decide ------------------------------------------------
+# Tokens are not stored here; see `switchyard init` / SWITCHYARD_APPROVER_TOKENS.
+[principals."maya.patel"]
+display = "Maya Patel (Sales lead)"
+roles = ["sales_lead"]
+
+[principals."omar.haddad"]
+display = "Omar Haddad (Finance)"
+roles = ["finance"]
+
+[principals."lena.brandt"]
+display = "Lena Brandt (Operations manager)"
+roles = ["ops_manager"]

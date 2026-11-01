@@ -1,0 +1,75 @@
+# Solar + battery estimator assumptions.
+#
+# ILLUSTRATIVE DEFAULTS. In a client deployment these come from the client's
+# own pricing book and are versioned with the code; every proposal records the
+# `assumptions_version` it was priced with.
+
+assumptions_version = "demo-2026.11"
+panel_watts = 430
+panel_area_m2 = 1.95
+usable_roof_fraction = 0.65
+degradation_per_year = 0.005
+lifetime_years = 25
+
+[segments.residential]
+target_offset = 1.0
+self_consumption = 0.35
+battery_uplift = 0.30
+battery_kwh_default = 10
+
+[segments.commercial]
+target_offset = 0.9
+self_consumption = 0.70
+battery_uplift = 0.15
+# commercial battery: this fraction of average daily use, rounded to 5 kWh
+battery_daily_fraction = 0.15
+
+[segments.agricultural]
+target_offset = 1.0
+self_consumption = 0.55
+battery_uplift = 0.20
+battery_daily_fraction = 0.20
+
+[regions.uk-south]
+label = "UK — South"
+currency = "GBP"
+symbol = "£"
+yield_kwh_per_kwp = 980
+import_tariff = 0.245
+export_tariff = 0.15
+capex_per_kwp = 1050
+battery_cost_per_kwh = 420
+grid_kg_co2_per_kwh = 0.207
+
+[regions.uk-north]
+label = "UK — North"
+currency = "GBP"
+symbol = "£"
+yield_kwh_per_kwp = 860
+import_tariff = 0.245
+export_tariff = 0.15
+capex_per_kwp = 1050
+battery_cost_per_kwh = 420
+grid_kg_co2_per_kwh = 0.207
+
+[regions.de]
+label = "Germany"
+currency = "EUR"
+symbol = "€"
+yield_kwh_per_kwp = 950
+import_tariff = 0.30
+export_tariff = 0.08
+capex_per_kwp = 1150
+battery_cost_per_kwh = 480
+grid_kg_co2_per_kwh = 0.380
+
+[regions.us-ca]
+label = "US — California"
+currency = "USD"
+symbol = "$"
+yield_kwh_per_kwp = 1600
+import_tariff = 0.31
+export_tariff = 0.07
+capex_per_kwp = 2200
+battery_cost_per_kwh = 650
+grid_kg_co2_per_kwh = 0.210

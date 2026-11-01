@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+# runtime state: databases and generated secrets
+.switchyard*/
+*.db
+*.db-wal
+*.db-shm
+secrets.json
+.env

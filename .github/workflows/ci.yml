@@ -1,0 +1,31 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Install
+        run: |
+          uv venv --python 3.12
+          uv pip install -e ".[dev]"
+      - name: Lint
+        run: uv run ruff check src tests && uv run ruff format --check src tests
+      - name: Tests (unit, contract, scenarios)
+        run: uv run pytest -q
+        env:
+          SWITCHYARD_MODE: offline
+      - name: Failure-mode report
+        run: uv run switchyard demo all --report demo-report.md
+        env:
+          SWITCHYARD_MODE: offline
+      - uses: actions/upload-artifact@v4
+        with:
+          name: demo-report
+          path: demo-report.md
