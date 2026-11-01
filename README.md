@@ -1,5 +1,7 @@
 # Switchyard
 
+[![ci](https://github.com/Safiullah-Rahu/switchyard/actions/workflows/ci.yml/badge.svg)](https://github.com/Safiullah-Rahu/switchyard/actions/workflows/ci.yml)
+
 A reference implementation of an OpenAI-first agent system for the operations of an energy installer.
 Specialist agents built on the **OpenAI Agents SDK** handle the judgement work: reading enquiries,
 qualifying leads, drafting proposals, choosing survey slots and reviewing drafts. A small durable backend
