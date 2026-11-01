@@ -358,6 +358,8 @@ a.metric:hover { border-color: var(--line-strong); box-shadow: var(--shadow-sm);
 .mini-facts dd { margin: 0; font-weight: 500; }
 .step-error { font-size: 12.5px; color: var(--bad); background: var(--bad-soft); padding: 8px 11px; border-radius: 7px; max-width: 100%; overflow-wrap: anywhere; }
 .step-question { font-size: 13px; }
+.step-note { display: flex; gap: 8px; align-items: flex-start; font-size: 12.5px; color: var(--ink-2); background: var(--warn-soft); padding: 8px 11px; border-radius: 7px; max-width: 100%; overflow-wrap: anywhere; }
+.step-note .i { color: var(--warn); margin-top: 2px; }
 .lead-top { display: flex; align-items: center; gap: 10px; font-size: 13px; }
 .figures { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; margin-top: 14px !important; }
 .figures > div { background: var(--surface); padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; }

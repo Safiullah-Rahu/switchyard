@@ -45,6 +45,7 @@
             <span class="agent-chip">{{ icon("agent", 13) }} {{ ag.finished_with }}{% if ag.handoffs %} <span class="muted">via {{ ag.started_with }}</span>{% endif %} · <span class="mono">{{ ag.model }}</span> · {{ ag.tool_calls|length }} tool call{{ "" if ag.tool_calls|length == 1 else "s" }}{% if ag.tool_calls %} <span class="muted">({{ ag.tool_calls|unique|join(", ") }})</span>{% endif %} · <span class="mono">{{ ag.cost_usd|usd }}</span></span>
             {% endfor %}
             {% if s.facts %}<dl class="mini-facts">{% for k, v in s.facts %}<div><dt>{{ k }}</dt><dd>{{ v }}</dd></div>{% endfor %}</dl>{% endif %}
+            {% for n in s.notes %}<div class="step-note">{{ icon("retry", 13) }}<span><strong>Sent back {{ "by review" if n["from"] == "review" else "by " ~ (n["from"]|step|lower) }}:</strong> {{ n.note }}</span></div>{% endfor %}
             {% if s.status in ("failed", "retry_wait", "blocked") and s.last_error %}<div class="step-error">{{ s.last_error }}</div>{% endif %}
             {% if s.waiting_kind == "approval" %}<a class="btn btn-sm" href="/approvals/{{ s.waiting_ref }}">{{ icon("approvals", 14) }} Review the approval</a>{% endif %}
             {% if s.waiting_kind == "decision" %}

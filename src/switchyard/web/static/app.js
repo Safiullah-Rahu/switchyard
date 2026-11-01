@@ -57,6 +57,7 @@
     } catch (e) { /* offline for a moment; try again next tick */ }
   }
 
+  window.switchyardRefresh = refresh;  // lets tests and screen recordings refresh on demand
   setInterval(refresh, 6000);
   setInterval(stamp, 1000);
   stamp();
