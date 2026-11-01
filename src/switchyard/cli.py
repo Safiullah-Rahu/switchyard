@@ -19,6 +19,16 @@ from .engine import Engine
 console = Console()
 
 
+def _utf8_output() -> None:
+    """Write UTF-8 even where Windows hands the process a legacy code page (cp1252 when output is piped or
+    redirected). The commands print arrows and dashes, and an encoding error would only surface after a command had
+    already acted (a fault armed, an approval recorded), exiting 1 as if it had failed."""
+    for stream in (sys.stdout, sys.stderr):
+        encoding = (getattr(stream, "encoding", None) or "").replace("-", "").lower()
+        if encoding != "utf8" and hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
+
+
 def _engine(args: argparse.Namespace, **overrides: Any) -> Engine:
     if getattr(args, "lease_seconds", None):
         overrides["lease_seconds"] = args.lease_seconds
@@ -268,6 +278,7 @@ def cmd_demo(args: argparse.Namespace) -> None:
 
 
 def main(argv: list[str] | None = None) -> None:
+    _utf8_output()
     parser = argparse.ArgumentParser(prog="switchyard", description="Durable, policy-gated agent workflows.")
     parser.add_argument("--home", help="state directory (default .switchyard or $SWITCHYARD_HOME)")
     parser.add_argument("--mode", choices=["offline", "live"], help="offline playbooks or live OpenAI models")
