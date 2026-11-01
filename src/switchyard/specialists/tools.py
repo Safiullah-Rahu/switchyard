@@ -36,8 +36,10 @@ class AgentContext:
     refused: list[dict[str, Any]] = field(default_factory=list)
 
 
+# Both tools are async on purpose: the SDK runs sync tools in worker threads, and parallel
+# tool calls would then write to the engine's database connection from several threads at once.
 @function_tool
-def get_estimate(ctx: ToolContext[AgentContext]) -> str:
+async def get_estimate(ctx: ToolContext[AgentContext]) -> str:
     """Return the deterministic solar/battery estimate for this lead: every figure you may quote,
     with its unit, plus the assumptions it was priced with."""
     est = ctx.context.estimate
@@ -47,7 +49,7 @@ def get_estimate(ctx: ToolContext[AgentContext]) -> str:
 
 
 @function_tool
-def propose_action(ctx: ToolContext[AgentContext], action: str, payload_json: str, reason: str) -> str:
+async def propose_action(ctx: ToolContext[AgentContext], action: str, payload_json: str, reason: str) -> str:
     """Ask the Switchyard engine to perform a side effect. You cannot perform actions yourself:
     the engine checks the action against company policy and runs it later, possibly after a
     person approves it.

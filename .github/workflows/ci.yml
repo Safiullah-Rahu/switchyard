@@ -9,8 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.0
+        with:
+          cache-dependency-glob: pyproject.toml
       - name: Install
         run: |
           uv venv --python 3.12
@@ -25,7 +27,7 @@ jobs:
         run: uv run switchyard demo all --report demo-report.md
         env:
           SWITCHYARD_MODE: offline
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: demo-report
           path: demo-report.md

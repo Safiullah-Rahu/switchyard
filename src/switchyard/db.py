@@ -8,6 +8,7 @@ Postgres; see docs/ARCHITECTURE.md for the migration notes.
 from __future__ import annotations
 
 import sqlite3
+import threading
 from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
@@ -167,8 +168,18 @@ CREATE INDEX IF NOT EXISTS ix_usage_run ON usage(run_id);
 """
 
 
+class LockedConnection(sqlite3.Connection):
+    """A connection that carries the re-entrant lock `tx()` uses to serialise transactions."""
+
+    def __init__(self, *args, **kwargs):  # type: ignore[no-untyped-def]
+        super().__init__(*args, **kwargs)
+        self.tx_lock = threading.RLock()
+
+
 def connect(path: str | Path) -> sqlite3.Connection:
-    conn = sqlite3.connect(str(path), isolation_level=None, check_same_thread=False, timeout=10)
+    conn = sqlite3.connect(
+        str(path), isolation_level=None, check_same_thread=False, timeout=10, factory=LockedConnection
+    )
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA synchronous=NORMAL")
@@ -180,15 +191,18 @@ def connect(path: str | Path) -> sqlite3.Connection:
 
 @contextmanager
 def tx(conn: sqlite3.Connection) -> Iterator[sqlite3.Connection]:
-    """BEGIN IMMEDIATE … COMMIT. Nested calls join the outer transaction."""
-    if conn.in_transaction:
-        yield conn
-        return
-    conn.execute("BEGIN IMMEDIATE")
-    try:
-        yield conn
-    except BaseException:
-        conn.execute("ROLLBACK")
-        raise
-    else:
-        conn.execute("COMMIT")
+    """BEGIN IMMEDIATE … COMMIT. Nested calls on the same thread join the outer transaction;
+    other threads sharing the connection wait for it to finish."""
+    lock = getattr(conn, "tx_lock", None) or threading.RLock()
+    with lock:
+        if conn.in_transaction:
+            yield conn
+            return
+        conn.execute("BEGIN IMMEDIATE")
+        try:
+            yield conn
+        except BaseException:
+            conn.execute("ROLLBACK")
+            raise
+        else:
+            conn.execute("COMMIT")

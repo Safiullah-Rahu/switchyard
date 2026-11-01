@@ -101,3 +101,23 @@ def test_audit_chain_detects_edits_and_deletions(tmp_path):
     assert log.verify().ok
     conn.execute("DELETE FROM audit WHERE seq = 2")
     assert log.verify().first_bad_seq == 3
+
+
+def test_audit_writes_from_many_threads_on_one_connection_stay_consistent(tmp_path):
+    """Regression: parallel tool calls once wrote through one connection from several threads."""
+    import threading
+
+    conn = connect(tmp_path / "t.db")
+    log = AuditLog(conn)
+
+    def write(n):
+        for i in range(40):
+            log.record("thread.write", actor=f"t{n}", data={"i": i})
+
+    threads = [threading.Thread(target=write, args=(n,)) for n in range(8)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    check = log.verify()
+    assert check.ok and check.checked == 320
