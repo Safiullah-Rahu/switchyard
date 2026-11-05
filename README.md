@@ -1,6 +1,7 @@
 # Switchyard
 
 [![ci](https://github.com/Safiullah-Rahu/switchyard/actions/workflows/ci.yml/badge.svg)](https://github.com/Safiullah-Rahu/switchyard/actions/workflows/ci.yml)
+[![M8ven Score](https://m8ven.ai/badge/mcp/safiullah-rahu-switchyard-i9rrel?v=6b25bcc7e3031b99a10463394372849c&variant=verified)](https://m8ven.ai/mcp/safiullah-rahu-switchyard-i9rrel?s=readme)
 
 A reference implementation of an OpenAI-first agent system for the operations of an energy installer.
 Specialist agents built on the **OpenAI Agents SDK** handle the judgement work: reading enquiries,
