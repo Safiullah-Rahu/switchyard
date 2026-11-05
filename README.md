@@ -17,7 +17,7 @@ actions that need a person **in code, not in a prompt**.
 ```bash
 uv venv && uv pip install -e ".[dev]"     # or: python -m venv .venv && pip install -e ".[dev]"
 switchyard demo all                       # 13 failure-mode scenarios, 78 checks, ~30 s
-pytest                                    # 95 tests, scenarios included
+pytest                                    # 102 tests, scenarios included
 switchyard serve                          # console + API + worker on http://127.0.0.1:8000
 ```
 
@@ -53,7 +53,7 @@ ignoring a prompt injection. See [docs/LIVE-RUN.md](docs/LIVE-RUN.md).
 | People involved only for external communications, binding commitments, sensitive disclosures and material decisions | Four policy classes in [`policy.toml`](src/switchyard/defaults/policy.toml): internal routine (runs on its own), external communication, binding commitment, sensitive disclosure. Plus named *decisions* for choices with consequences. | *pilot*, *decision*, *project_ops* |
 | Approvals enforced outside of prompts | The executor re-classifies each action from its stored payload at execution time. Approvals are HMAC-signed and bound to the payload hash. Agents can only *propose* actions from a per-agent allowlist. A deterministic leak scan checks anything that leaves the company. | *injection*, *approval_integrity* |
 | A complete pilot, then a phased rollout | Pilot: `lead_to_proposal`. Two more workflows on the same engine show the next phases: `service_request` (service desk) and `survey_to_install` (project operations, no LLM). | [`workflows/`](src/switchyard/workflows) |
-| Company-owned code, configuration, tests, documentation, handover | MIT-licensed, configuration in TOML, 95 tests, CI, a runbook and a handover checklist. | [`docs/`](docs) |
+| Company-owned code, configuration, tests, documentation, handover | MIT-licensed, configuration in TOML, 102 tests, CI, a runbook and a handover checklist. | [`docs/`](docs) |
 
 ---
 

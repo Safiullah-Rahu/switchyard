@@ -49,7 +49,8 @@ gives the method planned for each common system.
 ## MCP
 
 - `switchyard.mcp_server` exposes read-only tools over stdio (used by the agents) or streamable HTTP
-  (for the MCP inspector, ChatGPT or Claude desktop).
+  (for the MCP inspector, ChatGPT or Claude desktop). Each tool declares all four MCP hints
+  (`readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint`), so a host can see they change nothing.
 - A client that already has MCP servers for its systems (for example a HubSpot or Google Drive MCP server)
   can plug them into the agents with the same per-agent `tool_filter`, keeping the rule that **writes go
   through the outbox**. Where a third-party MCP server only offers write tools, those tools are not given to

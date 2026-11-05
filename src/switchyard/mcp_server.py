@@ -18,6 +18,7 @@ import os
 from typing import Any
 
 from mcp.server.mcpserver import MCPServer
+from mcp.types import ToolAnnotations
 
 from .sandbox import SURVEY_CALENDAR, SandboxApps
 
@@ -28,6 +29,11 @@ server = MCPServer(
         "This server cannot change anything; actions are proposed to the Switchyard engine instead."
     ),
 )
+
+# Declared on every tool, all four hints explicit, so a host can tell these
+# calls are safe without asking. The CRM, calendar and templates are the
+# company's own systems, a closed world.
+READ_ONLY = ToolAnnotations(read_only_hint=True, destructive_hint=False, idempotent_hint=True, open_world_hint=False)
 
 _apps: SandboxApps | None = None
 
@@ -46,13 +52,13 @@ def _public_contact(c: dict[str, Any]) -> dict[str, Any]:
     return {k: c.get(k) for k in ("id", "email", "name", "company", "phone", "segment")}
 
 
-@server.tool()
+@server.tool(annotations=READ_ONLY)
 def crm_search_contacts(query: str) -> list[dict[str, Any]]:
     """Find CRM contacts whose email, name or company contains `query` (case-insensitive)."""
     return [_public_contact(c) for c in apps().crm_search_contacts(query)]
 
 
-@server.tool()
+@server.tool(annotations=READ_ONLY)
 def crm_list_deals(email: str) -> list[dict[str, Any]]:
     """List deals for the contact with this email address, oldest first."""
     return [
@@ -61,13 +67,13 @@ def crm_list_deals(email: str) -> list[dict[str, Any]]:
     ]
 
 
-@server.tool()
+@server.tool(annotations=READ_ONLY)
 def calendar_free_slots(start_date: str, days: int = 7, duration_minutes: int = 90) -> list[dict[str, str]]:
     """Free site-survey slots on the surveyor calendar, starting on `start_date` (YYYY-MM-DD)."""
     return apps().calendar_free_slots(SURVEY_CALENDAR, start_date, days, duration_minutes)
 
 
-@server.tool()
+@server.tool(annotations=READ_ONLY)
 def docs_get_template(name: str) -> dict[str, Any]:
     """Return a proposal template: its sections, required disclaimer and tone rules."""
     template = apps().docs_template(name)
